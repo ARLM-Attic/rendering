@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="System.Compilers.Shaders.ShaderAST.BuiltinShaderMember" Collapsed="true">
+    <Position X="7.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAIAQEAAAAAAABAAAAAAgAAAA=</HashCode>
+      <FileName>ShaderAST\Builtins\Builtins.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.BuiltinShaderType" Collapsed="true">
+    <Position X="9" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABBAAAIAAAAAAUCAAAAAAAFggAACAIAAQEAAAAAAg=</HashCode>
+      <FileName>ShaderAST\Builtins\Builtins.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.BuiltinShaderField" Collapsed="true">
+    <Position X="11.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAIAAAAAAAAAAAAAAAAAEAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>ShaderAST\Builtins\Builtins.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.BuiltinShaderMethodBase" Collapsed="true">
+    <Position X="5.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAIAAAAEAAAAAAAAAIAAAACAAAA=</HashCode>
+      <FileName>ShaderAST\Builtins\Builtins.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.BuiltinShaderMethod" Collapsed="true">
+    <Position X="4.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAACAACAAgAAAAAAAAACAAAAAACAAEAAA=</HashCode>
+      <FileName>ShaderAST\Builtins\Builtins.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.BuiltinShaderConstructor" Collapsed="true">
+    <Position X="6.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ShaderAST\Builtins\Builtins.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.Info.ShaderParameter" Collapsed="true">
+    <Position X="16" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAABAAAAABAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Info\ShaderParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.ShaderTypeExtensors" Collapsed="true">
+    <Position X="17.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAQAAAAAAQAACAAAIAAAAAEAgAAAAAAAAAggE=</HashCode>
+      <FileName>Info\ShaderTypeExtensors.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.UserShaderMember" Collapsed="true">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAgABAA=</HashCode>
+      <FileName>ShaderAST\Users\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.UserShaderType" Collapsed="true">
+    <Position X="4.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABBAAAIAAAAAAUCAAAAAAABggAACAIAAQEAAAABAg=</HashCode>
+      <FileName>ShaderAST\Users\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.UserShaderMethodBase" Collapsed="true">
+    <Position X="7.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAABAA=</HashCode>
+      <FileName>ShaderAST\Users\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.UserShaderMethod" Collapsed="true">
+    <Position X="6.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAACAACAAAAAAAAAAAACAAAAAACAAEBAA=</HashCode>
+      <FileName>ShaderAST\Users\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.UserShaderConstructor" Collapsed="true">
+    <Position X="9" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>ShaderAST\Users\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.Shaders.ShaderAST.UserShaderField" Collapsed="true">
+    <Position X="11.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAABAA=</HashCode>
+      <FileName>ShaderAST\Users\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderConstructor" Collapsed="true">
+    <Position X="9" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Info\ShaderConstructor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderField" Collapsed="true">
+    <Position X="11.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Info\ShaderField.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderMember" Collapsed="true">
+    <Position X="9" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Info\ShaderMember.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderMethod" Collapsed="true">
+    <Position X="6.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAACAACAAAAAAAAAAAAAAAAAAACAAEAAA=</HashCode>
+      <FileName>Info\ShaderMethod.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderMethodBase" Collapsed="true">
+    <Position X="8" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Info\ShaderMethodBase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderProperty" Collapsed="true">
+    <Position X="13.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAiAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Info\ShaderProperty.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Compilers.Shaders.Info.ShaderType" Collapsed="true">
+    <Position X="4.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABBAAAIAAAAAAQCAAAAAAABggAAAAIAAQEAAAAAAg=</HashCode>
+      <FileName>Info\ShaderType.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="System.Compilers.Shaders.Info.ParameterModifier" Collapsed="true">
+    <Position X="16" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAACAAAAAAAAAAAAgEAAAEAAQAAAAAEAAAAEAACA=</HashCode>
+      <FileName>Info\ParameterModifier.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

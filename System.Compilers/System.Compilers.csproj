@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{25D36AD7-A754-4124-986C-0C41DB21CFEA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Compilers</RootNamespace>
+    <AssemblyName>System.Compilers</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ASTTransformer.cs" />
+    <Compile Include="AST\NetAST.cs" />
+    <Compile Include="AST\NetAstNode.cs" />
+    <Compile Include="AST\NetAstProgram.cs" />
+    <Compile Include="CodeGenerator.cs" />
+    <Compile Include="Evaluator.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowEdge.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowGraph.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowNode.cs" />
+    <Compile Include="IL\ILExpression.cs" />
+    <Compile Include="Generators\CSharp\CSharpCodeGenerator.cs" />
+    <Compile Include="Generators\NetCodeGenerator.cs" />
+    <Compile Include="Optimizers\MultidimensionalArraysOptimizer.cs" />
+    <Compile Include="IL\OpCodeCodes.cs" />
+    <Compile Include="IL\ILDecompiler.cs" />
+    <Compile Include="IL\TypeAnalysis.cs" />
+    <Compile Include="Operators.cs" />
+    <Compile Include="IL\ILReader.cs" />
+    <Compile Include="IL\ILTools.cs" />
+    <Compile Include="Optimizers\ArrayInitializerOptimizer.cs" />
+    <Compile Include="Optimizers\ConditionsOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\FlattenBlocksOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\ForFormatterOptimizer.cs" />
+    <Compile Include="Optimizers\GotoRemovalOptimizer.cs" />
+    <Compile Include="Optimizers\InlineVariablesOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\LoopsOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\Optimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\ShortCircuitAndTernaryOperatorOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\SplitToBlocksOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Optimizers\TrivialGotoRemoverOptimizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="System.Compilers.AST.NetAstNode" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstMemberDefinition" Collapsed="true">
+    <Position X="8.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstTypeDefinition" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstClassDefinition" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstStructDefinition" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstMethodBaseDefinition" Collapsed="true">
+    <Position X="3.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstMethodDefinition" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstConstructorDefinition" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstFieldDefinition" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstPropertyDefinition" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstEventDefinition" Collapsed="true">
+    <Position X="16.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstEnumDefinition">
+    <Position X="11.5" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.AST.NetAstDelegateDefinition" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AST\NetAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

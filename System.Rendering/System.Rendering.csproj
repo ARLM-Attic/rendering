@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F4AD4314-35A4-495E-83AB-35E851C9075A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Rendering</RootNamespace>
+    <AssemblyName>System.Rendering</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collections.cs" />
+    <Compile Include="Common\RenderBase.cs" />
+    <Compile Include="Common\RenderBase.RenderStateManagerBase.cs" />
+    <Compile Include="Common\RenderBase.ResourcesManagerBase.cs" />
+    <Compile Include="Common\RenderBase.Services.cs" />
+    <Compile Include="Common\RenderBase.TessellatorBase.cs" />
+    <Compile Include="Common\RenderExtensions.cs" />
+    <Compile Include="Common\Stacking.cs" />
+    <Compile Include="CustomPixels.cs" />
+    <Compile Include="Datas.cs" />
+    <Compile Include="Effects\Blending.cs" />
+    <Compile Include="Effects\Buffering.cs" />
+    <Compile Include="Effects\Culling.cs" />
+    <Compile Include="Effects\EffectBlendMode.cs" />
+    <Compile Include="Effects\Effects.cs" />
+    <Compile Include="Effects\Filling.cs" />
+    <Compile Include="Effects\Geometry\Primitive.cs" />
+    <Compile Include="Effects\Light.cs" />
+    <Compile Include="Effects\Lighting.cs" />
+    <Compile Include="Effects\Materials.cs" />
+    <Compile Include="Effects\Projecting.cs" />
+    <Compile Include="Effects\Shaders\Agents\DelegateShaderBuilderAgent.cs" />
+    <Compile Include="Effects\Shaders\Agents\LambdaExpressionShaderBuilderAgent.cs" />
+    <Compile Include="Effects\Shaders\EffectManager.cs" />
+    <Compile Include="Effects\Shaders\IStandardContext.cs" />
+    <Compile Include="Effects\Shaders\ShaderStage.cs" />
+    <Compile Include="Effects\SkinnedEffect.cs" />
+    <Compile Include="Effects\Texturing.cs" />
+    <Compile Include="Effects\Transforming.cs" />
+    <Compile Include="Effects\ShaderEffects.cs" />
+    <Compile Include="Effects\Viewing.cs" />
+    <Compile Include="Graphics.cs" />
+    <Compile Include="IEffect.cs" />
+    <Compile Include="IGraphic.cs" />
+    <Compile Include="IGraphicResource.cs" />
+    <Compile Include="IRenderDeviceService.cs" />
+    <Compile Include="Materials.cs" />
+    <Compile Include="Modeling\Cube.cs" />
+    <Compile Include="Modeling\Cylinder.cs" />
+    <Compile Include="Pipelines.cs" />
+    <Compile Include="RenderDevices.cs" />
+    <Compile Include="IModel.cs" />
+    <Compile Include="IRenderDevice.cs" />
+    <Compile Include="IRenderStatesManager.cs" />
+    <Compile Include="IResourcesManager.cs" />
+    <Compile Include="ITessellator.cs" />
+    <Compile Include="Modeling\BasicPrimitive.cs" />
+    <Compile Include="Modeling\ManifoldModel.cs" />
+    <Compile Include="Modeling\Mesh.cs" />
+    <Compile Include="Modeling\Teapot.cs" />
+    <Compile Include="Modeling\Text3D.cs" />
+    <Compile Include="Models.cs" />
+    <Compile Include="Effects\PipelineEffect.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderStates\AlphaTestState.cs" />
+    <Compile Include="RenderStates\BlendOperationState.cs" />
+    <Compile Include="RenderStates\ColorMask.cs" />
+    <Compile Include="RenderStates\Compare.cs" />
+    <Compile Include="RenderStates\CullModeState.cs" />
+    <Compile Include="RenderStates\DepthBufferState.cs" />
+    <Compile Include="RenderStates\FillModeState.cs" />
+    <Compile Include="RenderStates\FrameBufferState.cs" />
+    <Compile Include="RenderStates\LightingState.cs" />
+    <Compile Include="RenderStates\MaterialState.cs" />
+    <Compile Include="RenderStates\MatrixState.cs" />
+    <Compile Include="RenderStates\ShaderStates.cs" />
+    <Compile Include="RenderStates\StencilBufferState.cs" />
+    <Compile Include="RenderStates\TextureState.cs" />
+    <Compile Include="RenderStates\TextureState.TextureStage.cs" />
+    <Compile Include="Resourcing\AllocateableBase.cs" />
+    <Compile Include="Resourcing\Element.cs" />
+    <Compile Include="Resourcing\GraphicResource.cs" />
+    <Compile Include="Resourcing\IAllocateable.cs" />
+    <Compile Include="Resourcing\IndexBuffer.cs" />
+    <Compile Include="Resourcing\InvalidDescriptionException.cs" />
+    <Compile Include="Resourcing\TextureBuffer.cs" />
+    <Compile Include="Resourcing\Activating.cs" />
+    <Compile Include="Resourcing\TextureBufferExtensors.cs" />
+    <Compile Include="Resourcing\VertexBuffer.cs" />
+    <Compile Include="Effects\Shaders\ShaderBuilder.cs" />
+    <Compile Include="Sampler.cs" />
+    <Compile Include="ServicesExtensors.cs" />
+    <Compile Include="Services\LoaderService.cs" />
+    <Compile Include="Services\MeshService.cs" />
+    <Compile Include="Shading.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Compilers.Shaders\System.Compilers.Shaders.csproj">
+      <Project>{8FA8B4C1-E74B-4C8E-AA27-12270F3121BA}</Project>
+      <Name>System.Compilers.Shaders</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compilers\System.Compilers.csproj">
+      <Project>{25D36AD7-A754-4124-986C-0C41DB21CFEA}</Project>
+      <Name>System.Compilers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Maths\System.Maths.csproj">
+      <Project>{97D51C33-E916-476C-A411-7BCEF714E6B5}</Project>
+      <Name>System.Maths</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

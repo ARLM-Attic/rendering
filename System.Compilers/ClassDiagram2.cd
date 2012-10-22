@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="System.Compilers.ILAST.ILAstNode" Collapsed="true">
+    <Position X="17.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAIAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstExpression" Collapsed="true">
+    <Position X="18.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstConstantExpression" Collapsed="true">
+    <Position X="16.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstArgumentExpression" Collapsed="true">
+    <Position X="20.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstFieldExpression" Collapsed="true">
+    <Position X="25.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAEAAAAEgAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstLocalExpression" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAFAAAAEgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstThisExpression" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstBinaryOperatorExpression" Collapsed="true">
+    <Position X="18.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAIAgAAAAAAAAAoAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstTernaryOperatorExpressionv" Collapsed="true">
+    <Position X="23" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAABAAAACAAAAAAAAAAEIAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstUnaryOperatorExpression" Collapsed="true">
+    <Position X="27.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAAAAAAAAAAAEAoAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstConvertOperatorExpression" Collapsed="true">
+    <Position X="27.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstMethodBaseCallExpression" Collapsed="true">
+    <Position X="13" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAgAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstMethodCallExpression" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEACAAEgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstConstructorCallExpression" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstInitObjectExpression" Collapsed="true">
+    <Position X="29.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEgAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstAssignament" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstFieldAssignament" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstLocalAssignament" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAEgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstArgumentAssignament" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstGoto" Collapsed="true">
+    <Position X="34.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstConditionalGoto">
+    <Position X="34.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAEgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Compilers.ILAST.ILAstReturn" Collapsed="true">
+    <Position X="32" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>ILAST\ILAstNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

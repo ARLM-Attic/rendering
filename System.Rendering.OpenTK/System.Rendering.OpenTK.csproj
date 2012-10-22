@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4E0F3C17-878E-452F-A3C7-94C6A6AD1890}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Rendering.OpenTK</RootNamespace>
+    <AssemblyName>System.Rendering.OpenTK</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTK">
+      <HintPath>..\Libraries\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\Libraries\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OpenGLBuffersWrappers.cs" />
+    <Compile Include="OpenGLEffectManager.cs" />
+    <Compile Include="OpenGLRender.cs" />
+    <Compile Include="OpenGLRender.Modelling.cs" />
+    <Compile Include="OpenGLRender.RenderStatesFixed.cs" />
+    <Compile Include="OpenGLRender.ResourcesManager.cs" />
+    <Compile Include="OpenGLRender.Services.cs" />
+    <Compile Include="OpenGLTools.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Compilers.Shaders.GLSL\System.Compilers.Shaders.GLSL.csproj">
+      <Project>{72086514-B34E-49A6-8F8B-D11BECDD27D8}</Project>
+      <Name>System.Compilers.Shaders.GLSL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compilers.Shaders\System.Compilers.Shaders.csproj">
+      <Project>{8FA8B4C1-E74B-4C8E-AA27-12270F3121BA}</Project>
+      <Name>System.Compilers.Shaders</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compilers\System.Compilers.csproj">
+      <Project>{25D36AD7-A754-4124-986C-0C41DB21CFEA}</Project>
+      <Name>System.Compilers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Maths\System.Maths.csproj">
+      <Project>{97D51C33-E916-476C-A411-7BCEF714E6B5}</Project>
+      <Name>System.Maths</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering.Forms\System.Rendering.Forms.csproj">
+      <Project>{DF04990C-20A3-4E53-9C73-B9E1DC04ACA5}</Project>
+      <Name>System.Rendering.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering\System.Rendering.csproj">
+      <Project>{F4AD4314-35A4-495E-83AB-35E851C9075A}</Project>
+      <Name>System.Rendering</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
