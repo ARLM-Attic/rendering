@@ -46,6 +46,10 @@ namespace System.Rendering
         }
     }
 
+    /// <summary>
+    /// Represents a shader techinque, which is compossed of a
+    /// set of <see cref="Pass"/>.
+    /// </summary>
     public abstract class Technique : IEnumerable<Pass>, IDisposable
     {
         protected IRenderStatesManager RenderStates { get; private set; }
