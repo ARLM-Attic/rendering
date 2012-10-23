@@ -54,6 +54,10 @@ namespace System.Rendering
     {
         protected IRenderStatesManager RenderStates { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="Technique"/>.
+        /// </summary>
+        /// <param name="manager">An instance of <see cref="IRenderStatesManager"/> to be used by this technique.</param>
         public Technique(IRenderStatesManager manager)
         {
             if (manager == null)
