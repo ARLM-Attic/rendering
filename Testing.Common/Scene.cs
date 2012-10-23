@@ -19,7 +19,8 @@ namespace Testing.Common
 
 			appTime = new Stopwatch();
 			renderStopwatch = new Stopwatch();
-			
+			///gjhdfghjfgj 
+            ///
 			appTime.Start();
 		}
 
