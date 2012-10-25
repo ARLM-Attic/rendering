@@ -332,7 +332,7 @@ namespace System.Rendering.Effects.Shaders
                         {
                             var prev = _pipeline.PiorTo(_stage);
 
-                            foreach (var s in prev.Output)
+                            foreach (var s in prev.Output.Where(s => !(s.Item1 is ProjectedSemantic)))
                                 yield return s;
                         }
                     }

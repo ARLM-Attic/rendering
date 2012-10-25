@@ -79,7 +79,7 @@ namespace System.Rendering
         }
 
         private static ManifoldModel _Sphere;
-        public static ManifoldModel Sphere
+        public static IModel Sphere
         {
             get
             {
@@ -90,7 +90,7 @@ namespace System.Rendering
 
                         return new Vector3<float>(
                           (float)(Math.Cos(a) * Math.Sin(b)),
-                          (float)(Math.Cos(b)),
+                          (float)(-Math.Cos(b)),
                           (float)(Math.Sin(a) * Math.Sin(b))
                         );
                     }));
@@ -109,7 +109,7 @@ namespace System.Rendering
 
                     return new Vector3<float>(
                       (float)(Math.Cos(a) * Math.Sin(b)),
-                      (float)(Math.Cos(b)),
+                      (float)(-Math.Cos(b)),
                       (float)(Math.Sin(a) * Math.Sin(b))
                     );
                 }, 16, 7, true));
@@ -128,7 +128,7 @@ namespace System.Rendering
 
                     return new Vector3<float>(
                       (float)(Math.Cos(a) * Math.Sin(b)),
-                      (float)(Math.Cos(b)),
+                      (float)(-Math.Cos(b)),
                       (float)(Math.Sin(a) * Math.Sin(b))
                     );
                 }, 64, 32, true));

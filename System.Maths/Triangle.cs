@@ -33,10 +33,7 @@ namespace System.Maths
             {
                 Vector3 U = V3 - V1;
                 Vector3 V = V2 - V1;
-                return GMath.normalize(new Vector3(
-                V.Y * U.Z - V.Z * U.Y,
-                -V.X * U.Z + V.Z * U.X,
-                -V.Y * U.X + V.X * U.Y));
+								return GMath.normalize(GMath.cross(V, U));
             }
         }
 

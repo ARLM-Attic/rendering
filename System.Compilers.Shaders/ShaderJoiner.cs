@@ -58,7 +58,7 @@ namespace System.Compilers.Shaders
                     return n + index;
                 }
             };
-            ShaderTypeDeclarationAST newDeclaration = join.DeclareNewStruct("DATA__" + (ID++), 0);
+            ShaderTypeDeclarationAST newDeclaration = join.DeclareNewStruct("DATA_" + (ID++), 0);
 
             var same = Merge(s1.Members.OfType<ShaderFieldDeclarationAST>(), s2.Members.OfType<ShaderFieldDeclarationAST>());
             var in1not2 = s1.Members.OfType<ShaderFieldDeclarationAST>().Except(s2.Members.OfType<ShaderFieldDeclarationAST>(), new BySemanticEqComparer());
@@ -168,7 +168,7 @@ namespace System.Compilers.Shaders
 
                 var newOutput = JoinSimpleType(join, OutputType1, OutputType2); // union of Outputs
                 
-                var newMain = join.DeclareNewMethod("MAIN__" + (ID++), 0); // new Main
+                var newMain = join.DeclareNewMethod("MAIN_" + (ID++), 0); // new Main
 
                 join.Main = newMain.Method;
                 
