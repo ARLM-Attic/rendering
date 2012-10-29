@@ -35,9 +35,9 @@ namespace Testing.Comparisons
                 monitor.RaiseRender();
         }
 
-        Type[] renderTypes = new Type[] { /*typeof(Direct3DRender),*/ typeof(OpenGLRender), /*typeof (XnaRender)*/ };
+				Type[] renderTypes = new Type[] { typeof(Direct3DRender), typeof(OpenGLRender), typeof (XnaRender) };
 
-        Type[] sceneTypes = new Type[] { typeof(BasicShaderScene), typeof (TextureCubeScene), typeof (VolumeTextureScene), typeof (GeneratingOverTextureScene), typeof (ShadowMapScene) };
+				Type[] sceneTypes = new Type[] { typeof(BasicShaderScene), typeof (TextureCubeScene), typeof (VolumeTextureScene), typeof (GeneratingOverTextureScene), typeof (ShadowMapScene), /*typeof(CSGModelScene)*/ };
 
         List<RenderedControl> monitors = new List<RenderedControl>();
 

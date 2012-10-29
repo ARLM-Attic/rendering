@@ -68,11 +68,11 @@ namespace System.Rendering.Modeling
             }, 
             (IndexBuffer) new ushort[] { 
                 0,1,2,0,2,3, // Cara front
-                16,17,18,16,18,19, // Cara Left
-                12,13,14,12,14,15, // Cara top
                 4,6,5,4,7,6, // Cara back
-                20,21,22, 20, 22, 23, // cara right
-                8,9,10,8,10,11, // Cara bottom
+                8,10,9,8,11,10, // Cara bottom
+                12,13,14,12,14,15, // Cara top
+                16,17,18,16,18,19, // Cara left
+                20,22,21,20,23,22, // cara right
             })
         {
         }
