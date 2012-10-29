@@ -48,6 +48,7 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSGModelScene.cs" />
     <Compile Include="PipelineScene.cs" />
     <Compile Include="ShadowMaps.cs" />
     <Compile Include="GeneratingOverTextureScene.cs" />
