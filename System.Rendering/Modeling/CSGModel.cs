@@ -4,17 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Rendering.Resourcing;
 using System.Maths;
+using System.Rendering.Services;
 
 namespace System.Rendering.Modeling
 {
 	public class CSGModel : AllocateableBase, IModel
 	{
-		private Basic _primitive;
+		private Mesh _mesh;
 		private Node _root;
 
-		public CSGModel(Basic primitive)
+		public CSGModel(Mesh mesh)
 		{
-			_primitive = primitive;
+			if (mesh == null)
+				throw new ArgumentNullException("mesh");
+
+			_mesh = mesh;
 
 			InitializeRoot();
 		}
@@ -27,12 +31,13 @@ namespace System.Rendering.Modeling
 		{
 			_root = new Node();
 			_root.Build(GetPolygons());
+			_root.Invert();
 		}
 
 		private List<Polygon> GetPolygons()
 		{
 			var polygons = new List<Polygon>();
-			foreach (var item in _primitive.GetTriangles())
+			foreach (var item in _mesh.Triangles)
 			{
 				polygons.Add(new Polygon(new[] {
 					new Vertex(item.V1, item.Normal),
@@ -41,6 +46,31 @@ namespace System.Rendering.Modeling
 				}, false));
 			}
 			return polygons;
+		}
+
+		private void UpdateMesh()
+		{
+			var positionNormalVertices = new List<PositionNormalCoordinatesData>();
+			foreach (var polygon in _root.AllPolygons())
+			{
+				positionNormalVertices.Add(new PositionNormalCoordinatesData()
+				{
+					Position = polygon._vertices[0]._position,
+					Normal = polygon._vertices[0]._normal
+				});
+				positionNormalVertices.Add(new PositionNormalCoordinatesData()
+				{
+					Position = polygon._vertices[1]._position,
+					Normal = polygon._vertices[1]._normal
+				});
+				positionNormalVertices.Add(new PositionNormalCoordinatesData()
+				{
+					Position = polygon._vertices[2]._position,
+					Normal = polygon._vertices[2]._normal
+				});
+			}
+			var vb = (VertexBuffer)positionNormalVertices.ToArray();
+			_mesh = new Mesh(new DefaultMeshManager(vb, null));
 		}
 
 		public static CSGModel Union(CSGModel csg1, CSGModel csg2)
@@ -59,6 +89,7 @@ namespace System.Rendering.Modeling
 			b._root.ClipTo(a._root);
 			b._root.Invert();
 			a._root.Build(b._root.AllPolygons());
+			a.UpdateMesh();
 			return a;
 		}
 
@@ -79,6 +110,7 @@ namespace System.Rendering.Modeling
 			b._root.ClipTo(a._root);
 			a._root.Build(b._root.AllPolygons());
 			a._root.Invert();
+			a.UpdateMesh();
 			return a;
 		}
 
@@ -100,13 +132,14 @@ namespace System.Rendering.Modeling
 			b._root.Invert();
 			a._root.Build(b._root.AllPolygons());
 			a._root.Invert();
+			a.UpdateMesh();
 			return a;
 		}
 
 		public CSGModel Clone()
 		{
 			var csg = new CSGModel();
-			csg._primitive = _primitive;
+			csg._mesh = _mesh;
 			csg._root = _root.Clone();
 			return csg;
 		}
@@ -116,18 +149,16 @@ namespace System.Rendering.Modeling
 		protected override Location OnClone(AllocateableBase toFill, IRenderDevice render)
 		{
 			var filling = toFill as CSGModel;
+			filling._mesh = (Mesh)((IAllocateable)_mesh).Clone(render);
+			filling.InitializeRoot();
 
-			var allocatedVB = (VertexBuffer)_primitive.VertexBuffer.Clone(render);
-			var allocatedIB = (IndexBuffer)(_primitive.Indexes != null ? _primitive.Indexes.Clone(render) : null);
-			filling._primitive = Basic.Create(_primitive.Type, allocatedVB, allocatedIB);
+			if (filling._mesh.Indices == null)
+				return filling._mesh.Vertices.Location;
 
-			if (filling._primitive.Indexes == null)
-				return filling._primitive.VertexBuffer.Location;
-
-			if (filling._primitive.VertexBuffer.Location == Location.Device && filling._primitive.Indexes.Location == Location.Device)
+			if (filling._mesh.Vertices.Location == Location.Device && filling._mesh.Indices.Location == Location.Device)
 				return Location.Device;
 
-			if (filling._primitive.VertexBuffer.Location == Location.User && filling._primitive.Indexes.Location == Location.User)
+			if (filling._mesh.Vertices.Location == Location.User && filling._mesh.Indices.Location == Location.User)
 				return Location.User;
 
 			return Location.Render;
@@ -135,9 +166,8 @@ namespace System.Rendering.Modeling
 
 		protected override void OnDispose()
 		{
-			_primitive.VertexBuffer.Dispose();
-			if (_primitive.Indexes != null)
-				_primitive.Indexes.Dispose();
+			if (_mesh != null)
+				_mesh.Dispose();
 		}
 
 		#endregion
@@ -151,7 +181,7 @@ namespace System.Rendering.Modeling
 
 		public void Tesselate(ITessellator tessellator)
 		{
-			tessellator.Draw(_primitive);
+			((IModel)_mesh).Tesselate(tessellator);
 		}
 
 		#endregion
@@ -187,7 +217,7 @@ namespace System.Rendering.Modeling
 
 			public override string ToString()
 			{
-				return String.Format("[({0},{1},{2}), ({3},{4},{5})]", _position.X, _position.Y, _position.Z, _normal.X, _normal.Y, _normal.Z);
+				return String.Format("[P:({0},{1},{2}), N:({3},{4},{5})]", _position.X, _position.Y, _position.Z, _normal.X, _normal.Y, _normal.Z);
 			}
 		}
 
@@ -204,6 +234,20 @@ namespace System.Rendering.Modeling
 				_plane = Plane.FromPoints(vertices[0]._position, vertices[1]._position, vertices[2]._position);
 			}
 
+			public Polygon[] FanToTrianges()
+			{
+				List<Polygon> triangles = new List<Polygon>();
+				for (int i = 2; i < _vertices.Length; i++)
+				{
+					var v1 = new Vertex(_vertices[0]._position, _vertices[0]._normal);
+					var v2 = new Vertex(_vertices[i-1]._position, _vertices[i-1]._normal);
+					var v3 = new Vertex(_vertices[i]._position, _vertices[i]._normal);
+					var p = new Polygon(new [] { v1, v2, v3 }, false);
+					triangles.Add(p);
+				}
+				return triangles.ToArray();
+			}
+
 			public Polygon Clone()
 			{
 				var vertices = _vertices.Select(v => v.Clone()).ToArray();
@@ -212,10 +256,10 @@ namespace System.Rendering.Modeling
 
 			public void Flip()
 			{
-				_vertices = _vertices.Reverse().ToArray();
-				foreach (var v in _vertices)
-					v.Flip();
 				_plane.Flip();
+				Array.Reverse(_vertices);
+				for (int i = 0; i < _vertices.Length; i++)
+					_vertices[i].Flip();
 			}
 
 			public override string ToString()
@@ -233,7 +277,7 @@ namespace System.Rendering.Modeling
 
 			public static Plane FromPoints(Vector3 a, Vector3 b, Vector3 c)
 			{
-				var n = GMath.normalize(GMath.cross((c - a), (b - a)));
+				var n = GMath.normalize(GMath.cross((b - a), (c - a)));
 				return new Plane(n, GMath.dot(n, a));
 			}
 
@@ -314,8 +358,22 @@ namespace System.Rendering.Modeling
 							}
 						}
 
-						if (f.Count >= 3) front.Add(new Polygon(f.ToArray(), polygon._shared));
-						if (b.Count >= 3) back.Add(new Polygon(b.ToArray(), polygon._shared));
+						if (f.Count >= 3)
+						{
+							var frontPolygon = new Polygon(f.ToArray(), polygon._shared);
+							if (f.Count > 3)
+								front.AddRange(frontPolygon.FanToTrianges());
+							else
+								front.Add(frontPolygon);
+						}
+						if (b.Count >= 3)
+						{
+							var backPolygon = new Polygon(b.ToArray(), polygon._shared);
+							if (b.Count > 3)
+								back.AddRange(backPolygon.FanToTrianges());
+							else
+								back.Add(backPolygon);	
+						}
 
 						break;
 					default:
@@ -325,7 +383,7 @@ namespace System.Rendering.Modeling
 
 			public override string ToString()
 			{
-				return String.Format("({0}, {1}, {2}, {3})", _normal.X, _normal.Y, _normal.Z, _w);
+				return String.Format("Plane:({0}, {1}, {2}, {3})", _normal.X, _normal.Y, _normal.Z, _w);
 			}
 		}
 
@@ -349,8 +407,10 @@ namespace System.Rendering.Modeling
 
 			public void Invert()
 			{
-				_polygons.ForEach(p => p.Flip());
 				_plane.Flip();
+				for (int i = 0; i < _polygons.Count; i++)
+					_polygons[i].Flip();
+				
 				if (_front != null) _front.Invert();
 				if (_back != null) _back.Invert();
 				var temp = _front;
@@ -360,15 +420,20 @@ namespace System.Rendering.Modeling
 
 			public List<Polygon> ClipPolygons(List<Polygon> polygons)
 			{
+				if (_plane == null)
+					return polygons.ToList();
+
 				var front = new List<Polygon>();
 				var back = new List<Polygon>();
-				foreach (var p in _polygons)
-					_plane.SplitPolygon(p, front, back, front, back);
+				for (int i = 0; i < polygons.Count; i++)
+					_plane.SplitPolygon(polygons[i], front, back, front, back);
 
 				if (_front != null)
 					front = _front.ClipPolygons(front);
 				if (_back != null)
 					back = _back.ClipPolygons(back);
+				else
+					back.Clear();
 
 				return front.Concat(back).ToList();
 			}
@@ -418,6 +483,11 @@ namespace System.Rendering.Modeling
 			public override string ToString()
 			{
 				return _plane != null ? _plane.ToString() : String.Empty;
+			}
+
+			public int PolygonCount
+			{
+				get { return _polygons.Count + (_front != null ? _front.PolygonCount : 0) + (_back != null ? _back.PolygonCount : 0); }
 			}
 		}
 

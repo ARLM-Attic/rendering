@@ -97,8 +97,6 @@
     <Compile Include="Modeling\CSGModel.cs" />
     <Compile Include="Modeling\Cube.cs" />
     <Compile Include="Modeling\Cylinder.cs" />
-    <Compile Include="Modeling\FakeTessellator.cs" />
-    <Compile Include="Modeling\TranformedModel.cs" />
     <Compile Include="Pipelines.cs" />
     <Compile Include="RenderDevices.cs" />
     <Compile Include="IModel.cs" />
