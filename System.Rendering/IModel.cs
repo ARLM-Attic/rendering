@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Maths;
 
 namespace System.Rendering
 {
@@ -22,6 +23,18 @@ namespace System.Rendering
         /// </summary>
         /// <param name="tessellator">Tessellator interface that access to modelling functionallities of render device.</param>
         void Tesselate(ITessellator tessellator);
+
+        /// <summary>
+        /// Gets a clone of this model transformed by a matrix.
+        /// </summary>
+        IModel Transformed(Matrix4x4 transform);
+
+        /// <summary>
+        /// Gets a clone of this model transformed by a function.
+        /// </summary>
+        IModel Transformed<FVFIn, FVFOut>(Func<FVFIn, FVFOut> transform)
+            where FVFIn : struct
+            where FVFOut : struct;
     }
 }
 

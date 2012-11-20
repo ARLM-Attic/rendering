@@ -24,7 +24,20 @@ namespace Testing.Common
 
             image = render.Services.LoadTexture("Resources/Tulips_Small.jpg").Allocate(render);
 
-            teapot = Models.Teapot.Allocate(render);
+            //teapot = Models.Teapot.Allocate(render);
+
+            var cross = Models.Union(
+                Models.Union(Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f), Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(1, 0, 0))),
+                Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(0, 0, 1)));
+            //csg = cross.Allocate(render);
+
+            var csg = Models.Subtract(
+                    Models.Sphere.Transformed(Matrices.Scale(1f, 1f, 1f)),
+                cross
+                    ).Allocate(render);
+
+            teapot = csg;
+
             plane = Models.PlaneXZ.Allocate(render);
             cube = Models.Cube.Allocate(render);
         }
@@ -62,8 +75,8 @@ namespace Testing.Common
                 shadowMap ? Effect.None : Lighting.PointLight(LightPosition, new Vector3(1, 1, 1)),
                 (Viewing)view,
                 (Projecting)projection,
-                Buffering.Clear(shadowMap ? new Vector4(1,1,1,1) : new Vector4(0.2f, 0.2f, 0.2f, 0.2f)),
-                Buffering.ClearDepth());
+                Buffers.Clear(shadowMap ? new Vector4(1,1,1,1) : new Vector4(0.2f, 0.2f, 0.2f, 0.2f)),
+                Buffers.ClearDepth());
         }
 
         Vector3 LightPosition = new Vector3(4, 4, 4);

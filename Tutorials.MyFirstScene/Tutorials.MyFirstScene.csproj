@@ -2,26 +2,20 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{701F356D-9C07-4F4A-A7EE-CB645001FB5E}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{9A8D568D-9F54-4C4E-9D2D-34D156C5924E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Testing.Common</RootNamespace>
-    <AssemblyName>Testing.Common</AssemblyName>
+    <RootNamespace>Tutorials.MyFirstScene</RootNamespace>
+    <AssemblyName>Tutorials.MyFirstScene</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -30,7 +24,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -39,58 +34,54 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SlimDX, Version=4.0.11.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSGModelScene.cs">
-      <SubType>Code</SubType>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PipelineScene.cs" />
-    <Compile Include="ShadowMaps.cs" />
-    <Compile Include="GeneratingOverTextureScene.cs" />
-    <Compile Include="ManifoldsScene.cs" />
-    <Compile Include="Scene.cs" />
-    <Compile Include="SceneSample.cs" />
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BasicShaderScene.cs" />
-    <Compile Include="SimpleShaderScene.cs" />
-    <Compile Include="TextureCubeScene.cs" />
-    <Compile Include="TextureFormatsScene.cs" />
-    <Compile Include="VolumeTextureScene.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\lobbyxneg.JPG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\lobbyxpos.JPG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\lobbyyneg.JPG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\lobbyypos.JPG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\lobbyzneg.JPG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\lobbyzpos.JPG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\marmol.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Tulips_Small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\System.Compilers.Shaders.HLSL\System.Compilers.Shaders.HLSL.csproj">
+      <Project>{2EC081AB-41C9-436E-8255-7FC5A94FE079}</Project>
+      <Name>System.Compilers.Shaders.HLSL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\System.Compilers.Shaders\System.Compilers.Shaders.csproj">
       <Project>{8FA8B4C1-E74B-4C8E-AA27-12270F3121BA}</Project>
       <Name>System.Compilers.Shaders</Name>
@@ -106,6 +97,10 @@
     <ProjectReference Include="..\System.Rendering.Forms\System.Rendering.Forms.csproj">
       <Project>{DF04990C-20A3-4E53-9C73-B9E1DC04ACA5}</Project>
       <Name>System.Rendering.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering.SlimDX\System.Rendering.SlimDX.csproj">
+      <Project>{7CC53971-50D9-4F7B-9076-3F989128016C}</Project>
+      <Name>System.Rendering.SlimDX</Name>
     </ProjectReference>
     <ProjectReference Include="..\System.Rendering\System.Rendering.csproj">
       <Project>{F4AD4314-35A4-495E-83AB-35E851C9075A}</Project>

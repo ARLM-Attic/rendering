@@ -72,6 +72,10 @@ namespace System.Compilers.Shaders
 
     public class NormalSemantic : IndexedSemantic
     {
+        public override float GetDefaultValue()
+        {
+            return 1;
+        }
     }
 
     public class CoordinatesSemantic : IndexedSemantic

@@ -57,7 +57,7 @@ namespace System.Rendering.Direct3D9
             DataDescription description;
             var declaration = Direct3D9Tools.GetVertexDeclaration (vertexes.InnerElementType, out stride, out description);
 
-            var flag = Marshal.SizeOf(indices.InnerElementType) == 32 ? MeshFlags.Managed | MeshFlags.Use32Bit : MeshFlags.Managed;
+            var flag = Marshal.SizeOf(indices.InnerElementType) == 4 ? MeshFlags.Managed | MeshFlags.Use32Bit : MeshFlags.Managed;
 
             internalMesh = new SlimDX.Direct3D9.Mesh(render.Device, indices.Length / 3, vertexes.Length, flag, declaration);
 

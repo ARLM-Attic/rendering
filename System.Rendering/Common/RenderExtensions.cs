@@ -21,49 +21,13 @@ namespace System.Rendering
             _Draw(render, rendering, effects, effects.Length - 1);
         }
 
-        struct SinglePrimitiveAsModel<GP> : IModel where GP:struct, IGraphicPrimitive
-        {
-            internal GP primitive;
-
-            public void Tesselate(ITessellator tessellator)
-            {
-                tessellator.Draw<GP>(primitive);
-            }
-
-            public IRenderDevice Render
-            {
-                get { return null; }
-            }
-
-            public Location Location
-            {
-                get { return Rendering.Location.User; }
-            }
-
-            public Resourcing.IAllocateable Clone(IRenderDevice render)
-            {
-                throw new NotSupportedException();
-            }
-
-            public bool IsSupported(IRenderDevice render)
-            {
-                return render.TessellatorInfo.IsSupported<GP>();
-            }
-
-            public void Dispose()
-            {
-            }
-        }
 
         public static void Draw<GP>(this IRenderDevice render, GP primitive) where GP : struct, IGraphicPrimitive
         {
             render.Draw(primitive.AsModel());
         }
 
-        public static IModel AsModel<GP>(this GP graphicPrimitive) where GP : struct, IGraphicPrimitive
-        {
-            return new SinglePrimitiveAsModel<GP>() { primitive = graphicPrimitive };
-        }
+
 
         /// <summary>
         /// Draws a logic provided by an Action object affected by a secuence of effects.

@@ -7,6 +7,7 @@ namespace System.Maths
     public sealed class Triangle
     {
         public readonly Vector3 V1, V2, V3;
+
         public Triangle(Vector3 V1, Vector3 V2, Vector3 V3)
         {
             this.V1 = V1;
@@ -22,10 +23,6 @@ namespace System.Maths
                                 (Vector3)GMath.mul(new Vector4(V3, 1), app));
         }
 
-
-        public static readonly Triangle PlaneXY = new Triangle(Vectors.XAxis, Vectors.O, Vectors.YAxis);
-        public static readonly Triangle PlaneYZ = new Triangle(Vectors.YAxis, Vectors.O, Vectors.ZAxis);
-        public static readonly Triangle PlaneXZ = new Triangle(Vectors.XAxis, Vectors.O, Vectors.ZAxis);
 
         public Vector3 Normal
         {
