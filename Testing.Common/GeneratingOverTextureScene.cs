@@ -42,8 +42,8 @@ namespace Testing.Common
                     Viewing.LookAtLH(new Vector3(0, 0, -4), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
                     Projecting.PerspectiveFovLH((float)Math.PI / 4, 1, 1, 1000),
                     Shading.Phong,
-                    Buffering.Clear(new Vector4(1, 0, 0, 1)),
-                    Buffering.ClearDepth());
+                    Buffers.Clear(new Vector4(1, 0, 0, 1)),
+                    Buffers.ClearDepth());
 
             textureRender.EndScene();
 
@@ -67,8 +67,8 @@ namespace Testing.Common
 					Viewing.LookAtLH(new Vector3(2, 1, -6), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
 					Projecting.PerspectiveFovLH((float)Math.PI / 4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
                     Shading.Phong,
-					Buffering.Clear(new Vector4(1, 0, 1, 1)),
-					Buffering.ClearDepth());
+					Buffers.Clear(new Vector4(1, 0, 1, 1)),
+					Buffers.ClearDepth());
 
 			render.EndScene();
 		}

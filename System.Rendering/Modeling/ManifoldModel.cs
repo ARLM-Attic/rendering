@@ -17,179 +17,76 @@ using System.Maths;
 
 namespace System.Rendering.Modeling
 {
-    public class ManifoldModel : AllocateableBase, IModel
+    public interface IManifoldModel : IModel
     {
-        Basic primitive;
-        IManifold manifold;
-        int[] slices;
+        IManifold Manifold { get; }
 
-        public static ManifoldModel Surface(Func<float, float, Vector3> surface)
+        void Invalidate();
+    }
+
+    public class PointModel : SingleModel<Basic>, IManifoldModel
+    {
+        public PointModel(Manifold0 manifold):base (Basic.Points (new PositionData { Position = new Vector3 () }))
         {
-            return Surface(surface, 32, 32, true);
-        }
-        public static ManifoldModel Surface(Func<float, float, Vector3> surface, int slices, int stacks, bool generateNormals)
-        {
-            var mm = new ManifoldModel(Manifold.Surface(surface), slices, stacks);
-            if (generateNormals)
-                mm.ComputeNormals();
-            return mm;
+            this.Manifold = manifold;
+            this.Invalidate();
         }
 
-        protected ManifoldModel()
+        public Manifold0 Manifold
+        {
+            get;
+            private set;
+        }
+
+        IManifold IManifoldModel.Manifold { get { return Manifold; } }
+
+        public void Invalidate()
+        {
+            PositionData[] data = Primitive.VertexBuffer.GetData<PositionData>();
+            data[0].Position = Manifold.Position;
+            Primitive.VertexBuffer.Update(data);
+        }
+    }
+
+    public class CurveModel : SingleModel<Basic>, IManifoldModel
+    {
+        public CurveModel(Manifold1 manifold, int slices)
+            : base(Basic.LineStrip(new PositionData[slices + 1]))
+        {
+            this.Manifold = manifold;
+            this.Slices = slices;
+            Invalidate();
+        }
+
+        public CurveModel(Manifold1 manifold)
+            : this(manifold, 32)
         {
         }
 
-        private ManifoldModel(Basic primitive, int[] slices)
+        public int Slices { get; private set; }
+
+        public Manifold1 Manifold
         {
-            this.primitive = primitive;
-            this.slices = slices;
+            get;
+            private set;
         }
 
-        private ManifoldModel(IManifold manifold, params int[] slices)
+        IManifold IManifoldModel.Manifold { get { return Manifold; } }
+
+        public void Invalidate()
         {
-            var vertexesArray = GetVertexes(manifold, slices);
-            uint[] indexes = GetIndexes(manifold, slices);
-            this.slices = slices;
-            this.manifold = manifold;
-            switch (manifold.Dimension)
-            {
-                case 0: primitive = Basic.Points(vertexesArray);
-                    break;
-                case 1: primitive = Basic.LineStrip(vertexesArray);
-                    break;
-                case 2:
-                    WeldVertexes(vertexesArray, 0.0001f);
-                    primitive = Basic.Create(BasicPrimitiveType.Triangles, (VertexBuffer)vertexesArray, (IndexBuffer)indexes);
-                    //ComputeNormals();
-                    break;
-                case 3: primitive = Basic.Create(BasicPrimitiveType.Box, (VertexBuffer)vertexesArray, (IndexBuffer)indexes);
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
+            PositionData[] data = Primitive.VertexBuffer.GetData<PositionData>();
+            
+            for (int i = 0; i < Slices + 1; i++)
+                data[i].Position = Manifold.GetPositionAt(i / (float)Slices);
+
+            Primitive.VertexBuffer.Update(data);
         }
+    }
 
-        public int Slices
-        {
-            get
-            {
-                return slices[slices.Length - 1];
-            }
-        }
-
-        public int Stacks
-        {
-            get
-            {
-                if (slices.Length < 2)
-                    throw new InvalidOperationException();
-                return slices[slices.Length - 2];
-            }
-        }
-
-        public int Planes
-        {
-            get
-            {
-                if (slices.Length < 3)
-                    throw new InvalidOperationException();
-                return slices[slices.Length - 3];
-            }
-        }
-
-        private void WeldVertexes(Array vertexes, float epsilon)
-        {
-            VERTEX[] tab = vertexes as VERTEX[];
-            for (int i = 0; i <= slices[0]; i++)
-            {
-                int index1 = i * (slices[1] + 1);
-                int index2 = i * (slices[1] + 1) + slices[1];
-                if (GMath.length(tab[index1].Position - tab[index2].Position) <= epsilon)
-                    tab[index2].Position = tab[index1].Position;
-            }
-
-            for (int j = 0; j <= slices[1]; j++)
-            {
-                int index1 = j;
-                int index2 = (slices[1] + 1) * (slices[0]) + j;
-                if (GMath.length(tab[index1].Position - tab[index2].Position) <= epsilon)
-                    tab[index2].Position = tab[index1].Position;
-            }
-        }
-
-        private void ComputeNormals()
-        {
-            PositionNormalData[] toModify = primitive.VertexBuffer.GetData<PositionNormalData>() as PositionNormalData[];
-            uint[] indexes = primitive.Indexes.GetData<uint>() as uint[];
-
-            for (int i = 0; i < indexes.Length / 3; i++)
-            {
-                Triangle t = new Triangle(toModify[indexes[i * 3 + 0]].Position, toModify[indexes[i * 3 + 2]].Position, toModify[indexes[i * 3 + 1]].Position);
-                var v = t.Normal;
-                toModify[indexes[i * 3 + 0]].Normal += v;
-                toModify[indexes[i * 3 + 1]].Normal += v;
-                toModify[indexes[i * 3 + 2]].Normal += v;
-            }
-
-            for (int i = 0; i < toModify.Length; i++)
-                toModify[i].Normal = GMath.normalize(toModify[i].Normal);
-
-            primitive.VertexBuffer.Update(toModify);
-        }
-
-        private void ComputeNormals2()
-        {
-            PositionData[] toModify = primitive.VertexBuffer.GetData<PositionData>() as PositionData[];
-
-            Dictionary<Vector3, Vector3> normalsForPositions = new Dictionary<Vector3, Vector3>();
-
-            Action<Vector3, Vector3> AgregateNormal = (p, n) =>
-            {
-                if (!normalsForPositions.ContainsKey(p))
-                    normalsForPositions.Add(p, new Vector3(0, 0, 0));
-
-                normalsForPositions[p] += n;
-            };
-
-            foreach (var triangle in GetTriangles(toModify))
-            {
-                var normal = triangle.Normal;
-
-                AgregateNormal(triangle.V1, normal);
-                AgregateNormal(triangle.V2, normal);
-                AgregateNormal(triangle.V3, normal);
-            }
-
-            foreach (var p in new List<Vector3>(normalsForPositions.Keys))
-                normalsForPositions[p] = GMath.normalize(normalsForPositions[p]);
-
-            // this is for handle some problems when copying the buffer onto toModify variable
-            //if(normalsForPositions.Count == primitive.VertexBuffer.Length)
-              primitive.VertexBuffer.Process<PositionNormalData>(v => new PositionNormalData() { Position = v.Position, Normal = -1 * normalsForPositions[v.Position] });
-        }
-
-        private IEnumerable<Triangle> GetTriangles(PositionData[] positions)
-        {
-            int[] indexes = primitive.Indexes.ToArray();
-
-            for (int i = 0; i < indexes.Length / 3; i++)
-                yield return new Triangle(
-                    positions[indexes[i * 3 + 0]].Position,
-                    positions[indexes[i * 3 + 1]].Position,
-                    positions[indexes[i * 3 + 2]].Position);
-        }
-
-        private static uint[] GetIndexes(IManifold manifold, int[] slices)
-        {
-            switch (slices.Length)
-            {
-                case 0: return null;
-                case 1: return null;
-                case 2: return GetQuadricIndexes(slices[0], slices[1]);
-                case 3: return GetBoxicIndexes(slices[0], slices[1], slices[2]);
-                default: throw new NotSupportedException();
-            }
-        }
+    public class SurfaceModel : Mesh<PositionNormalCoordinatesData>, IManifoldModel
+    {
+        public const int PRESITION = 7;
 
         private static uint[] GetQuadricIndexes(int stacks, int slices)
         {
@@ -197,118 +94,104 @@ namespace System.Rendering.Modeling
             int cont = 0;
             for (int i = 0; i < stacks; i++)
                 for (int j = 0; j < slices; j++)
-                    if ((i + j) % 2 == 0)
+                    //if ((i + j) % 2 == 0)
                     {
                         con[cont++] = (uint)(i * (slices + 1) + j);
-                        con[cont++] = (uint)((i + 1) * (slices + 1) + j);
                         con[cont++] = (uint)((i + 1) * (slices + 1) + (j + 1));
+                        con[cont++] = (uint)((i + 1) * (slices + 1) + j);
 
                         con[cont++] = (uint)(i * (slices + 1) + j);
-                        con[cont++] = (uint)((i + 1) * (slices + 1) + (j + 1));
                         con[cont++] = (uint)(i * (slices + 1) + (j + 1));
+                        con[cont++] = (uint)((i + 1) * (slices + 1) + (j + 1));
                     }
-                    else
-                    {
-                        con[cont++] = (uint)(i * (slices + 1) + j);
-                        con[cont++] = (uint)((i + 1) * (slices + 1) + j);
-                        con[cont++] = (uint)((i) * (slices + 1) + (j + 1));
+                    //else
+                    //{
+                    //    con[cont++] = (uint)(i * (slices + 1) + j);
+                    //    con[cont++] = (uint)((i + 1) * (slices + 1) + j);
+                    //    con[cont++] = (uint)((i) * (slices + 1) + (j + 1));
 
-                        con[cont++] = (uint)((i + 1) * (slices + 1) + j);
-                        con[cont++] = (uint)((i + 1) * (slices + 1) + (j + 1));
-                        con[cont++] = (uint)(i * (slices + 1) + (j + 1));
-                    }
+                    //    con[cont++] = (uint)((i + 1) * (slices + 1) + j);
+                    //    con[cont++] = (uint)((i + 1) * (slices + 1) + (j + 1));
+                    //    con[cont++] = (uint)(i * (slices + 1) + (j + 1));
+                    //}
             return con;
         }
 
-        private static uint[] GetBoxicIndexes(int slices, int stacks, int planes)
+        public Manifold2 Manifold
         {
-            throw new NotImplementedException();
+            get;
+            private set;
         }
 
-        private static VERTEX[] GetVertexes(IManifold manifold, int[] slices)
+        static Vector3 Normalize(Vector3 x)
         {
-            VERTEX[] vertexes = new VERTEX[slices.Aggregate(1, (l, i) => l * (i + 1))];
+            return new Vector3((float)Math.Round(x.X, PRESITION), (float)Math.Round(x.Y, PRESITION), (float)Math.Round(x.Z, PRESITION));
+        }
 
-            switch (manifold.Dimension)
-            {
-                case 0: vertexes[0] = VERTEX.Create(((Manifold0)manifold).Position, Vectors.O, new Vector2(0, 0));
-                    break;
-                case 1: for (int i = 0; i <= slices[0]; i++)
-                    {
-                        float u = i / (float)slices[0];
-                        vertexes[i] = VERTEX.Create(((Manifold1)manifold)[u].Position, Vectors.O, new Vector2(u, 0));
-                    }
-                    break;
-                case 2:
-                    for (int i = 0; i <= slices[0]; i++)
-                        for (int j = 0; j <= slices[1]; j++)
-                        {
-                            float u = i / (float)slices[0];
-                            float v = j / (float)slices[1];
-                            vertexes[i * (slices[1] + 1) + j] = VERTEX.Create(((Manifold2)manifold)[u, v].Position, Vectors.O, new Vector2(u, v));
-                            //vertexes[i * (slices[1] + 1) + j] = new VERTEX(new Vector3<float>(u, v, 0), Vectors.O, u, v);
-                        }
-                    break;
-                default: throw new NotImplementedException();
-            }
+        private static VERTEX[] GetVertexes(Manifold2 manifold, int stacks, int slices)
+        {
+            VERTEX[] vertexes = new VERTEX[(stacks + 1) * (slices + 1)];
+
+            float epsilon = 0.00001f;
+
+            for (int i = 0; i <= stacks; i++)
+                for (int j = 0; j <= slices; j++)
+                {
+                    float u = i / (float)stacks;
+                    float v = j / (float)slices;
+
+                    Vector3 position = Normalize (manifold[u, v].Position);
+                    Vector3 positionPlusDx = manifold[u + epsilon, v].Position;
+                    Vector3 positionPlusDy = manifold[u, v + epsilon].Position;
+
+                    vertexes[i * (slices + 1) + j] = VERTEX.Create(position, Vectors.Front, new Vector2(u, v));
+                    //vertexes[i * (slices + 1) + j] = VERTEX.Create(position, GMath.normalize(GMath.cross(positionPlusDy - position, positionPlusDx - position)), new Vector2(u, v));
+                }
 
             return vertexes;
         }
 
-        public ManifoldModel(Manifold0 manifold)
-            : this((IManifold)manifold)
+        public bool AutoComputeNormals
+        {
+            get;
+            set;
+        }
+
+        public int Stacks { get; private set; }
+
+        public int Slices { get; private set; }
+
+        public SurfaceModel(Manifold2 manifold, int slices, int stacks, bool autoComputeNormals)
+            : base(new VERTEX[(stacks + 1) * (slices + 1)], GetQuadricIndexes(slices, stacks))
+        {
+            this.Manifold = manifold;
+            this.Slices = slices;
+            this.Stacks = stacks;
+            this.AutoComputeNormals = autoComputeNormals;
+            this.Invalidate();
+        }
+
+        public SurfaceModel(Manifold2 manifold, int slices, int stacks)
+            : this(manifold, slices, stacks, true)
         {
         }
 
-        public ManifoldModel(Manifold1 manifold, int slices)
-            : this((IManifold)manifold, slices)
+        public SurfaceModel(Manifold2 manifold)
+            : this(manifold, 32, 32)
         {
         }
 
-        public ManifoldModel(Manifold2 manifold, int slices, int stacks)
-            : this((IManifold)manifold, slices, stacks)
+        IManifold IManifoldModel.Manifold
         {
+            get { return Manifold; }
         }
 
-        public ManifoldModel(Manifold3 manifold, int slices, int stacks, int planes)
-            : this((IManifold)manifold, slices, stacks, planes)
+        public void Invalidate()
         {
-        }
-
-        public void Tesselate(ITessellator tessellator)
-        {
-            tessellator.Draw(this.primitive);
-        }
-
-        protected override Location OnClone(AllocateableBase toFill, IRenderDevice render)
-        {
-            ManifoldModel filling = toFill as ManifoldModel;
-
-            filling.slices = this.slices;
-            VertexBuffer vbAllocated = (VertexBuffer)primitive.VertexBuffer.Clone(render);
-            IndexBuffer ibAllocated = primitive.Indexes == null ? null : (IndexBuffer)primitive.Indexes.Clone(render);
-            filling.primitive = Basic.Create(primitive.Type, vbAllocated, ibAllocated);
-
-            if (filling.primitive.Indexes == null)
-                return filling.primitive.VertexBuffer.Location;
-
-            if (filling.primitive.VertexBuffer.Location == Rendering.Location.Device && filling.primitive.Indexes.Location == Rendering.Location.Device)
-                return Rendering.Location.Device;
-            if (filling.primitive.VertexBuffer.Location == Rendering.Location.User || filling.primitive.Indexes.Location == Rendering.Location.User)
-                return Rendering.Location.User;
-            return Rendering.Location.Render;
-        }
-
-        protected override void OnDispose()
-        {
-            primitive.VertexBuffer.Dispose();
-            if (primitive.Indexes != null)
-                primitive.Indexes.Dispose();
-        }
-
-        public bool IsSupported(IRenderDevice render)
-        {
-            return render.TessellatorInfo.IsSupported<Basic>();
+            var vertexes = GetVertexes(Manifold, Slices, Stacks);
+            this.Vertices.Update(vertexes);
+            if (AutoComputeNormals)
+                this.ComputeNormals();
         }
     }
 }

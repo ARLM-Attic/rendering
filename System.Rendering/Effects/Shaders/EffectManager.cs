@@ -411,11 +411,29 @@ namespace System.Rendering.Effects.Shaders
 
                     return typeDec.Type;
                 }
-                Dictionary<ShaderProgramAST, Tuple<ShaderProgramAST, Dictionary<ShaderMember, ShaderMember>>> _fixedProgramsCache = new Dictionary<ShaderProgramAST, Tuple<ShaderProgramAST, Dictionary<ShaderMember, ShaderMember>>>();
+
+                class SeqKeyCmp<T> : IEqualityComparer<IEnumerable<T>>
+                {
+                    public bool Equals(IEnumerable<T> x, IEnumerable<T> y)
+                    {
+                        return x.SequenceEqual(y);
+                    }
+
+                    public int GetHashCode(IEnumerable<T> obj)
+                    {
+                        return obj.Aggregate(0, (a, x) => a + (x.GetHashCode() + 3) * 7);
+                    }
+                }
+
+                Dictionary<IEnumerable<Tuple<Semantic, ShaderType>>,
+                Dictionary<ShaderProgramAST, Tuple<ShaderProgramAST, Dictionary<ShaderMember, ShaderMember>>>> _fixedProgramsCache = new Dictionary<IEnumerable<Tuple<Semantic, ShaderType>>, Dictionary<ShaderProgramAST, Tuple<ShaderProgramAST, Dictionary<ShaderMember, ShaderMember>>>>(new SeqKeyCmp<Tuple<Semantic, ShaderType>>());
                 
                 private ShaderProgramAST FixShader(out GlobalBindings bindings)
                 {
-                    if (!_fixedProgramsCache.ContainsKey(_shader))
+                    if (!_fixedProgramsCache.ContainsKey(Input))
+                        _fixedProgramsCache.Add(Input, new Dictionary<ShaderProgramAST, Tuple<ShaderProgramAST, Dictionary<ShaderMember, ShaderMember>>>());
+
+                    if (!_fixedProgramsCache[Input].ContainsKey(_shader))
                     {
                         Builtins builtins = _shader.Builtins;
 
@@ -423,7 +441,6 @@ namespace System.Rendering.Effects.Shaders
 
                         Dictionary<ShaderMember, ShaderMember> maps, compilations;
                         program.Include(_shader, out maps, out compilations);
-
 
                         program.PushMode(ShaderProgramAST.AddingMode.Append);
 
@@ -506,14 +523,14 @@ namespace System.Rendering.Effects.Shaders
 
                         program.Main = newMain.Method;
 
-                        _fixedProgramsCache.Add(_shader, Tuple.Create(program, maps));
+                        _fixedProgramsCache[Input].Add(_shader, Tuple.Create(program, maps));
                     }
 
-                    var mappings = _fixedProgramsCache[_shader].Item2;
+                    var mappings = _fixedProgramsCache[Input][_shader].Item2;
 
                     bindings = _shaderBindings.Map(mappings);
 
-                    return _fixedProgramsCache[_shader].Item1;
+                    return _fixedProgramsCache[Input][_shader].Item1;
                 }
                 #endregion
             }

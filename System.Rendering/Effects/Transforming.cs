@@ -69,10 +69,10 @@ namespace System.Rendering.Effects
         public static Transforming Rotate(FLOATINGTYPE angle, Axis axis)
         {
             return (Transforming)Matrices.Rotate(angle,
-                new Vector3(
+                GMath.normalize (new Vector3(
                 1 * Convert.ToInt32((axis & Axis.X) != 0),
                 1 * Convert.ToInt32((axis & Axis.Y) != 0),
-                1 * Convert.ToInt32((axis & Axis.Z) != 0)));
+                1 * Convert.ToInt32((axis & Axis.Z) != 0))));
         }
 
         public static Transforming Scale(FLOATINGTYPE sx, FLOATINGTYPE sy, FLOATINGTYPE sz)

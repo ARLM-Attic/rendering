@@ -162,6 +162,11 @@ namespace System.Rendering
                 render.RenderStateInfo.GetState<ProjectionState>().Matrix,
                 render.RenderStateInfo.GetState<ViewState>().Matrix);
         }
+
+        public static float GetAspectRatio(this IImageRenderDevice render)
+        {
+            return render.ImageHeight / (float)render.ImageWidth;
+        }
     }
 
     public class RayInteractionEventArgs : EventArgs

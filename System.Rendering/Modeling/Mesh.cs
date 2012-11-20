@@ -11,6 +11,7 @@ using FLOATINGTYPE = System.Single;
 #endif
 
 using System;
+using System.Linq;
 using System.Collections;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace System.Rendering.Modeling
         /// </summary>
         /// <param name="transform">A Matrix4x4 structure used for transforming the vertexes</param>
         /// <returns>A Mesh object representing the transformed mesh</returns>
-        public Mesh Transform(Matrix4x4 transform)
+        public Mesh Transformed(Matrix4x4 transform)
         {
             VertexBuffer newVB = Vertices.Clone(transform);
 
@@ -64,7 +65,7 @@ namespace System.Rendering.Modeling
         /// </summary>
         /// <param name="vertexProcess">A method for transform each vertex</param>
         /// <returns>A Mesh object with the transformed mesh</returns>
-        public Mesh Transform<FVF, FVFOut>(Func<FVF, FVFOut> function)
+        public Mesh Transformed<FVF, FVFOut>(Func<FVF, FVFOut> function)
             where FVF : struct
             where FVFOut : struct
         {
@@ -202,13 +203,22 @@ namespace System.Rendering.Modeling
         {
             return render.TessellatorInfo.IsSupported<Basic>();
         }
+
+        IModel IModel.Transformed(Matrix4x4 transform)
+        {
+            return Transformed(transform);
+        }
+
+        IModel IModel.Transformed<FVFIn, FVFOut>(Func<FVFIn, FVFOut> transform)
+        {
+            return Transformed(transform);
+        }
     }
 
     class DefaultMeshManager : IMeshManager
     {
         private VertexBuffer vertexes;
         private IndexBuffer indices;
-        private Box box;
 
         #region Constructors
 
@@ -225,37 +235,51 @@ namespace System.Rendering.Modeling
 
         #endregion
 
+        #region Compute Normals
+
         /// <summary>
         /// Computes the normals of vertexes automatically considering the normals of triangles each vertex correspond.
         /// </summary>
         public void ComputeNormals()
         {
-            VertexBuffer toModify = Vertexes.Clone<VertexBuffer, PositionNormalData>();
+            PositionNormalData[] positions = Vertexes.GetData<PositionNormalData>();
+            int[] indexes = Indices.GetData<int>();
 
-            Dictionary<Vector3, Vector3> normalsForPositions = new Dictionary<Vector3, Vector3>();
+            bool[] discard = new bool[positions.Length];
+            int[] replaced = new int[positions.Length];
 
-            Action<Vector3, Vector3> AgregateNormal = (p, n) =>
+            Dictionary<Vector3, int> cluster = new Dictionary<Vector3, int>(new Vector3EpsilonEqualityComparer());
+
+            for (int i = 0; i < positions.Length; i++)
+                if (!cluster.ContainsKey(positions[i].Position))
+                {
+                    replaced[i] = i;
+                    cluster.Add(positions[i].Position, i);
+                }
+                else
+                {
+                    replaced[i] = cluster[positions[i].Position];
+                    discard[i] = true;
+                }
+
+            for (int i = 0; i < indexes.Length / 3; i++)
             {
-                if (!normalsForPositions.ContainsKey(p))
-                    normalsForPositions.Add(p, new Vector3(0, 0, 0));
-
-                normalsForPositions[p] += n;
-            };
-
-            foreach (var triangle in GetTriangles(toModify, Indices))
-            {
-                var normal = triangle.Normal;
-
-                AgregateNormal(triangle.V1, normal);
-                AgregateNormal(triangle.V2, normal);
-                AgregateNormal(triangle.V3, normal);
+                Triangle t = new Triangle(positions[indexes[i * 3 + 0]].Position, positions[indexes[i * 3 + 2]].Position, positions[indexes[i * 3 + 1]].Position);
+                var v = t.Normal;
+                positions[replaced[indexes[i * 3 + 0]]].Normal += v;
+                positions[replaced[indexes[i * 3 + 1]]].Normal += v;
+                positions[replaced[indexes[i * 3 + 2]]].Normal += v;
             }
 
-            foreach (var p in new List<Vector3>(normalsForPositions.Keys))
-                normalsForPositions[p] = GMath.normalize(normalsForPositions[p]);
+            for (int i = 0; i < positions.Length; i++)
+                positions[i].Normal = GMath.normalize(positions[replaced[i]].Normal);
 
-            Vertexes.Process<PositionNormalData>(v => new PositionNormalData() { Position = v.Position, Normal = normalsForPositions[v.Position] });
+            Vertexes.Update(positions);
         }
+
+        #endregion
+
+        #region Intersect
 
         private IEnumerable<Triangle> GetTriangles(VertexBuffer vertexBufferPositionNormal, IndexBuffer indexBuffer)
         {
@@ -311,13 +335,6 @@ namespace System.Rendering.Modeling
             }
         }
 
-        #region IModel Members
-
-        public void InternalDraw(ITessellator tessellator)
-        {
-            tessellator.Draw(Basic.Create(BasicPrimitiveType.Triangles, Vertexes, Indices));
-        }
-
         #endregion
 
         public VertexBuffer Vertexes
@@ -339,17 +356,150 @@ namespace System.Rendering.Modeling
             Indices.Dispose();
         }
 
+        #region Weld Vertices
+        class Vector3EpsilonEqualityComparer : IEqualityComparer<Vector3>
+        {
+            Vector3 Normalize(Vector3 x)
+            {
+                return new Vector3((float)Math.Round(x.X, 6), (float)Math.Round(x.Y, 6), (float)Math.Round(x.Z, 6));
+            }
+
+            public bool Equals(Vector3 x, Vector3 y)
+            {
+                return Normalize(x).Equals(Normalize(y));
+            }
+
+            public int GetHashCode(Vector3 obj)
+            {
+                return Normalize(obj).GetHashCode();
+            }
+        }
+
         public void WeldVertexes(float epsilon)
         {
+            PositionData[] positions = Vertexes.GetData<PositionData>();
+            int[] indexes = Indices.GetData<int>();
+            bool[] discard = new bool[positions.Length];
+            int[] replaced = new int[positions.Length];
+            int newVertexes = 0;
 
+            if (epsilon < 0.000001f)
+            {
+                Dictionary<Vector3, int> cluster = new Dictionary<Vector3, int>(new Vector3EpsilonEqualityComparer());
+
+                for (int i=0; i<positions.Length; i++)
+                    if (!cluster.ContainsKey(positions[i].Position))
+                    {
+                        replaced[i] = newVertexes;
+                        cluster.Add(positions[i].Position, newVertexes);
+                        newVertexes ++;
+                    }
+                    else
+                    {
+                        replaced[i] = cluster[positions[i].Position];
+                        discard[i] = true;
+                    }
+            }
+            else
+            {
+                Dictionary<Tuple<int, int, int>, List<Tuple<Vector3, int>>> cluster = new Dictionary<Tuple<int, int, int>, List<Tuple<Vector3, int>>>();
+
+                float sqrEpsilon = epsilon * epsilon;
+                
+                for (int i =0; i<positions.Length; i++)
+                {
+                    var p = positions[i];
+                    replaced[i] = -1;
+
+                    int xc = (int)Math.Round(p.Position.X / epsilon);
+                    int yc = (int)Math.Round(p.Position.Y / epsilon);
+                    int zc = (int)Math.Round(p.Position.Z / epsilon);
+
+                    Tuple<int,int,int> cell = Tuple.Create(xc, yc, zc);
+
+                    /// Check in 9 (adyacents) cells
+                    for (int dx = -1; dx <= 1; dx++)
+                        for (int dy = -1; dy <= 1; dy++)
+                            for (int dz = -1; dz <= 1; dz++)
+                            {
+                                var adjCell = Tuple.Create (xc+dx, yc+dy, zc+dz);
+                                if (cluster.ContainsKey(adjCell))
+                                {
+                                    List<Tuple<Vector3, int>> l = cluster[adjCell];
+
+                                    foreach (var t in l)
+                                    {
+                                        var vec = t.Item1 - p.Position;
+                                        if (GMath.dot(vec, vec) <= sqrEpsilon)
+                                            replaced[i] = t.Item2;
+                                    }
+                                }
+                            }
+
+                    if (replaced[i] == -1)
+                    {
+                        replaced[i] = newVertexes;
+
+                        if (!cluster.ContainsKey(cell))
+                            cluster.Add(cell, new List<Tuple<Vector3, int>>());
+
+                        cluster[cell].Add(Tuple.Create(p.Position, newVertexes));
+
+                        newVertexes++;
+                    }
+                    else
+                        discard[i] = true;
+                }
+            }
+
+            #region Discard Vertexes
+
+            var newVertexesArray = Array.CreateInstance(Vertexes.InnerElementType, newVertexes);
+
+            Array srcArray = Vertexes.GetData();
+
+            int index = 0;
+            int j = 0;
+
+            foreach (var v in srcArray)
+            {
+                if (!discard[index])
+                {
+                    newVertexesArray.SetValue(v, j);
+                    j++;
+                }
+                index++;
+            }
+
+            #endregion
+
+            #region Change Indexes
+
+            for (int i = 0; i < indexes.Length; i++)
+                indexes[i] = replaced[indexes[i]];
+
+            #endregion
+
+            var render = Vertexes.Render;
+
+            Vertexes.Dispose();
+
+            vertexes = ((VertexBuffer)newVertexesArray).Allocate(render);
+
+            indices.Update(indexes);
         }
+        #endregion
+
+        #region Tessellated
 
         public IMeshManager Tessellated(float segments)
         {
+            // TODO: Implement here a software tessellation of the mesh.
             return new DefaultMeshManager(this.Vertexes.Clone(), this.Indices.Clone());
         }
-    }
 
+        #endregion
+    }
 
     public class Mesh<FVF> : Mesh where FVF : struct
     {
@@ -361,8 +511,9 @@ namespace System.Rendering.Modeling
             : base((VertexBuffer)vertexes, (IndexBuffer)indexes)
         {
         }
-    }
 
+        public static Mesh<FVF> Empty { get { return new Mesh<FVF>(new FVF[0], new uint[0]); } }
+    }
 
     public interface IMeshManager
     {
@@ -377,8 +528,6 @@ namespace System.Rendering.Modeling
         void WeldVertexes(float epsilon);
 
         IMeshManager Tessellated(float segments);
-
-        void InternalDraw(ITessellator tessellator);
 
         void Dispose();
     }

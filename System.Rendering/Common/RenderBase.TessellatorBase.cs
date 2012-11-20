@@ -73,71 +73,11 @@ namespace System.Rendering
                 this.render = render;
             }
 
-            /// <summary>
-            /// When overriden pushes a new Matrix4x4 transformation for modelling
-            /// </summary>
-            /// <param name="mat"></param>
-            protected virtual void PushMatrix(Matrix4x4 mat)
-            {
-                this.RenderState.Save<WorldState>();
-                this.RenderState.SetState<WorldState>((WorldState)GMath.mul(mat, this.RenderState.GetState<WorldState>().Matrix));
-            }
-
-            protected Matrix4x4 WorldTransform
-            {
-                get
-                {
-                    return RenderState.GetState<WorldState>().Matrix;
-                }
-            }
-
-            /// <summary>
-            /// When overriden pops the last Matrix4x4 transformation multiplied.
-            /// </summary>
-            protected virtual void PopMatrix()
-            {
-                this.RenderState.Restore<WorldState>();
-            }
-
-            protected virtual void PushVertexProcess<FVF, ResultFVF>(Func<FVF, ResultFVF> process)
-                where FVF : struct
-                where ResultFVF : struct
-            {
-                this.RenderState.Save<VertexShaderState>();
-                var vsState = this.RenderState.GetState<VertexShaderState>();
-                this.RenderState.SetState<VertexShaderState>(new VertexShaderState(process, vsState.functions));
-            }
-
-            protected virtual void PopVertexProcess()
-            {
-                this.RenderState.Restore<VertexShaderState>();
-            }
-
             public virtual void Draw<GP>(GP graphicPrimitive) where GP : struct, IGraphicPrimitive
             {
                 ProcessInteraction(graphicPrimitive);
 
                 ((ITessellatorOf<GP>)this).Draw(graphicPrimitive);
-            }
-
-            public virtual void Draw(Action action, Matrix4x4 transform)
-            {
-                PushMatrix(transform);
-
-                action();
-
-                PopMatrix();
-            }
-
-            public virtual void Draw<FVF, ResultFVF>(Action action, Func<FVF, ResultFVF> process)
-                where FVF : struct
-                where ResultFVF : struct
-            {
-                PushVertexProcess<FVF, ResultFVF>(process);
-
-                action();
-
-                PopVertexProcess();
             }
 
             public virtual bool IsSupported<GP>() where GP : struct, IGraphicPrimitive
@@ -160,12 +100,10 @@ namespace System.Rendering
                 if (primitive is IIntersectableGraphicPrimitive)
                 {
                     IIntersectableGraphicPrimitive intersectableGP = (IIntersectableGraphicPrimitive)primitive;
-                    Matrix4x4 worldInverse = new Matrix4x4();
-                    worldInverse = WorldTransform.Inverse;
 
                     foreach (IRayPicker rayPicker in RayPickers)
                     {
-                        var infos = intersectableGP.Intersect(rayPicker.Ray.Transform(worldInverse));
+                        var infos = intersectableGP.Intersect(rayPicker.Ray);
                         if (infos.Length > 0)
                             foreach (IRayListener listener in RayListeners)
                                 NotifyInteraction(rayPicker, infos[0]);
@@ -177,12 +115,11 @@ namespace System.Rendering
             {
                 if (primitive is IIntersectableVertexedGraphicPrimitive)
                 {
-                    Matrix4x4 worldInverse = WorldTransform.Inverse;
                     IIntersectableVertexedGraphicPrimitive intersectableGP = (IIntersectableVertexedGraphicPrimitive)primitive;
 
                     foreach (IRayPicker rayPicker in RayPickers)
                     {
-                        List<IntersectInfo> infos = new List<IntersectInfo> (intersectableGP.Intersect(rayPicker.Ray.Transform(worldInverse), processed));
+                        List<IntersectInfo> infos = new List<IntersectInfo> (intersectableGP.Intersect(rayPicker.Ray, processed));
                         infos.Sort();
                         if (infos.Count > 0)
                             foreach (IRayListener listener in RayListeners)
@@ -192,12 +129,11 @@ namespace System.Rendering
                 else
                     if (primitive is IIntersectableGraphicPrimitive)
                     {
-                        Matrix4x4 worldInverse = WorldTransform.Inverse;
                         IIntersectableGraphicPrimitive intersectableGP = (IIntersectableGraphicPrimitive)primitive;
 
                         foreach (IRayPicker rayPicker in RayPickers)
                         {
-                            var infos = intersectableGP.Intersect(rayPicker.Ray.Transform(worldInverse));
+                            var infos = intersectableGP.Intersect(rayPicker.Ray);
                             if (infos.Length > 0)
                                 foreach (IRayListener listener in RayListeners)
                                     NotifyInteraction(rayPicker, infos[0]);

@@ -12,20 +12,18 @@ namespace Testing.Common
 {
 	public class CSGModelScene : Scene
 	{
-		CSGModel model1;
-		CSGModel model2;
+		IModel model1;
+		IModel model2;
 
-		CSGModel union;
+		IModel union;
 
 		public override void Initialize(IControlRenderDevice render)
 		{
-			var cube1 = Models.Cube;
-			model1 = new CSGModel(Basic.Create(BasicPrimitiveType.Triangles, cube1.Vertices, cube1.Indices));
+			model1 = Models.Cube;
 			
-			var cube2 = Models.Cube.Transform(Matrices.Translate(0.0f, 0.5f, 0.0f));
-			model2 = new CSGModel(Basic.Create(BasicPrimitiveType.Triangles, cube2.Vertices, cube2.Indices));
+			model2 = Models.Cube.Transformed(Matrices.Translate(0.0f, 0.5f, 0.0f));
 			
-			union = model1.Union(model2);
+			union = Models.Union (model1, model2);
 		}
 
 		public override void Draw(IControlRenderDevice render)
@@ -44,8 +42,8 @@ namespace Testing.Common
 			Lighting.PointLight(new System.Maths.Vector3(1, 4, 4), Vectors.White),
 			Viewing.LookAtLH(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 3, 6), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
 			Projecting.PerspectiveFovLH(GMath.PiOver4, (float)render.ImageHeight / render.ImageWidth, 0.1f, 100.0f),
-			Buffering.Clear(new Vector4(0.2f, 0.2f, 0.2f, 1.0f)),
-			Buffering.ClearDepth());
+			Buffers.Clear(new Vector4(0.2f, 0.2f, 0.2f, 1.0f)),
+			Buffers.ClearDepth());
 
 			render.EndScene();
 		}
