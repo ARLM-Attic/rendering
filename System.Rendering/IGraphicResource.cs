@@ -94,7 +94,7 @@ namespace System.Rendering
         /// <summary>
         /// Gets a copy of the entire resource data in a Array of elements T.
         /// </summary>
-        public static Array GetData<T>(this IGraphicResource resource) where T:struct
+        public static T[] GetData<T>(this IGraphicResource resource) where T:struct
         {
             return GetData<T>(resource, null, null);
         }

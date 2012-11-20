@@ -65,8 +65,8 @@ namespace Testing.Common
 			Lighting.PointLight(new System.Maths.Vector3(1, 4, 4), Vectors.White),
 			Viewing.LookAtLH(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 0, 5), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
 			Projecting.PerspectiveFovLH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
-			Buffering.Clear(new Vector4(0f, 0f, 0f, 1)),
-			Buffering.ClearDepth());
+			Buffers.Clear(new Vector4(0f, 0f, 0f, 1)),
+			Buffers.ClearDepth());
 
 			render.EndScene();
 		}

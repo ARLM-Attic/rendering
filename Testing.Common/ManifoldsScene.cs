@@ -15,7 +15,7 @@ namespace Testing.Common
 
         public override void Initialize(System.Rendering.Forms.IControlRenderDevice render)
         {
-            manifold = ManifoldModel.Surface((u, v) => new Vector3(u, v, 0), 128, 128, false).Allocate(render);
+            manifold = Models.Surface((u, v) => new Vector3(u, v, 0), 128, 128, false).Allocate(render);
         }
 
         public override void Draw(System.Rendering.Forms.IControlRenderDevice render)
@@ -41,8 +41,8 @@ namespace Testing.Common
             Shading.Phong,
             Viewing.LookAtRH(new Vector3(1f, 1f, -2), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
             Projecting.PerspectiveFovRH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
-            Buffering.ClearDepth(),
-            Buffering.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
+            Buffers.ClearDepth(),
+            Buffers.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
             render.EndScene();
         }
     }

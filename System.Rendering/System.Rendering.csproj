@@ -68,7 +68,7 @@
     <Compile Include="CustomPixels.cs" />
     <Compile Include="Datas.cs" />
     <Compile Include="Effects\Blending.cs" />
-    <Compile Include="Effects\Buffering.cs" />
+    <Compile Include="Effects\Buffers.cs" />
     <Compile Include="Effects\Culling.cs" />
     <Compile Include="Effects\EffectBlendMode.cs" />
     <Compile Include="Effects\Effects.cs" />
@@ -94,9 +94,13 @@
     <Compile Include="IGraphicResource.cs" />
     <Compile Include="IRenderDeviceService.cs" />
     <Compile Include="Materials.cs" />
-    <Compile Include="Modeling\CSGModel.cs" />
+    <Compile Include="Modeling\CSGModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Modeling\Cube.cs" />
     <Compile Include="Modeling\Cylinder.cs" />
+    <Compile Include="Modeling\ModelGroup.cs" />
+    <Compile Include="Modeling\SingleModel.cs" />
     <Compile Include="Pipelines.cs" />
     <Compile Include="RenderDevices.cs" />
     <Compile Include="IModel.cs" />

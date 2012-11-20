@@ -71,8 +71,8 @@ namespace Testing.Common
             
             Shading.Gouraud,
             
-            Buffering.ClearDepth(),
-            Buffering.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
+            Buffers.ClearDepth(),
+            Buffers.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
             render.EndScene();
         }
     }

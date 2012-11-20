@@ -16,7 +16,7 @@ namespace Testing.Common
 
 		public override void Initialize(System.Rendering.Forms.IControlRenderDevice render)
 		{
-			model = new Cylinder().Allocate (render);
+			model = Models.Cylinder.Allocate (render);
             texture = render.Services.LoadTexture("Resources/Tulips_Small.jpg").Allocate(render);
 		}
 
@@ -41,8 +41,8 @@ namespace Testing.Common
             Shading.Phong,
 			Viewing.LookAtRH(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 0, 5), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
 			Projecting.PerspectiveFovRH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
-			Buffering.Clear(new Vector4(0.4f, 0.4f, 0.5f, 1)),
-			Buffering.ClearDepth());
+			Buffers.Clear(new Vector4(0.4f, 0.4f, 0.5f, 1)),
+			Buffers.ClearDepth());
 
 			render.EndScene();
 		}

@@ -57,10 +57,12 @@ namespace System.Rendering
         {
             Array dataTemp = this.GetData<PositionNormalData>();
 
+            var normalTransform = transform.Inverse.Transpose;
+
             Array transformed = dataTemp.Cast<PositionNormalData>().Select(e => new PositionNormalData()
             {
                 Position = (Vector3)GMath.mul(new Vector4(e.Position, 1), transform),
-                Normal = (Vector3)GMath.mul(new Vector4(e.Normal, 0), transform)
+                Normal = (Vector3)GMath.mul(new Vector4(e.Normal, 0), normalTransform)
             }).ToArray();
 
             VertexBuffer clone = this.Clone();

@@ -183,7 +183,12 @@ namespace System.Rendering
         [Normal]
         public Vector3 Normal;
         [Color]
-        public int Color;
+        public Vector4 Color;
+
+        public static PositionNormalColorData Create(Vector3 position, Vector3 normal, Vector4 color)
+        {
+            return new PositionNormalColorData { Position = position, Normal = normal, Color = color };
+        }
     }
 
     [ShaderType]

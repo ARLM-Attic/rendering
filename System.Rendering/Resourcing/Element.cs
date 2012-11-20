@@ -409,68 +409,7 @@ namespace System.Rendering
 
         public static unsafe void Copy(Array src, Array dst)
         {
-            //    Type srcElementType = src.GetType().GetElementType();
-            //    Type dstElementType = dst.GetType ().GetElementType();
-
-            //    if (!srcElementType.IsValueType || !dstElementType.IsValueType)
-            //        throw new ArgumentException("Types must be value types");
-
-            //    if (srcElementType == dstElementType)
-            //    {
-            //        PointerManager.Copy(src, dst);
-            //        return;
-            //    }
-
-            //    if (srcElementType.IsPrimitive && dstElementType.IsPrimitive)
-            //    {
-            //        Array converted = Array.CreateInstance(dstElementType, src.Length);
-            //        int index = 0;
-            //        foreach (var o in src)
-            //            converted.SetValue(Convert.ChangeType(o, dstElementType), index++);
-            //        PointerManager.Copy(converted, dst);
-            //        return;
-            //    }
-
-            //    if (dstElementType.IsPrimitive || srcElementType.IsPrimitive)
-            //    {
-            //        if (Marshal.SizeOf(dstElementType) != Marshal.SizeOf(srcElementType))
-            //            throw new ArgumentException("Can not copy from/to a basic type to/from a struct type with different sizes");
-
-            //        PointerManager.Copy(src, dst);
-            //        return;
-            //    }
-
-            //    DataDescriptor srcDescriptor = GetDescriptorAndAddIfNoPresent(srcElementType);
-            //    DataDescriptor dstDescriptor = GetDescriptorAndAddIfNoPresent(dstElementType);
-
-            //    int lenght = src.Length;
-            //    IntPtr dstPtr = Marshal.UnsafeAddrOfPinnedArrayElement(dst, 0);
-            //    IntPtr srcPtr = Marshal.UnsafeAddrOfPinnedArrayElement(src, 0);
-
-            //    int srcElementSize = Marshal.SizeOf(srcElementType);
-            //    int dstElementSize = Marshal.SizeOf(dstElementType);
-
-            //    foreach (var srcField in srcDescriptor.Declaration)
-            //    {
-            //        DataComponentDescription dstField;
-            //        if (dstDescriptor.Match(srcField.Semantic, out dstField))
-            //        {
-            //            if (srcField.IsOnBytes && dstField.IsOnBytes)
-            //            {
-            //                int fieldSize = Math.Min(srcField.Size, dstField.Size);
-
-            //                dstPtr = (IntPtr)((int)dstPtr + dstField.Offset);
-            //                srcPtr = (IntPtr)((int)srcPtr + srcField.Offset);
-
-            //                PointerManager.Copy(srcPtr, dstPtr, lenght, srcElementSize, dstElementSize, fieldSize);
-            //            }
-            //            else
-            //            {
-
-            //            }
-            //        }
-            //    }
-
+            GC.Collect(); // This will prevent of GC to move the pinned arrays.
             Copy(Marshal.UnsafeAddrOfPinnedArrayElement(src, 0), src.GetType().GetElementType(), Marshal.UnsafeAddrOfPinnedArrayElement(dst, 0), dst.GetType().GetElementType(), src.Length);
         }
     }

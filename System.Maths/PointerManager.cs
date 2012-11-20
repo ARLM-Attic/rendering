@@ -160,6 +160,9 @@ namespace System.Unsafe
             {
                 byte* s = (byte*)source;
                 byte* d = (byte*)destination;
+                int stepS = sizeOfSourceSlots - countOfBytes;
+                int stepD = sizeOfDestinationSlots - countOfBytes;
+
                 while (numberOfCopies > 0)
                 {
                     int c = countOfBytes;
@@ -170,8 +173,8 @@ namespace System.Unsafe
                         d++;
                         c--;
                     }
-                    s += sizeOfSourceSlots - countOfBytes;
-                    d += sizeOfDestinationSlots - countOfBytes;
+                    s += stepS;
+                    d += stepD;
                     numberOfCopies--;
                 }
             }

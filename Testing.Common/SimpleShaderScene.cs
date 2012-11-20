@@ -18,7 +18,7 @@ namespace Testing.Common
 
 		public override void Initialize(System.Rendering.Forms.IControlRenderDevice render)
 		{
-			model = new Cylinder();
+			model = Models.Cylinder;
 
 			coordinates = TextureBuffer.Empty<CustomPixels.ARGB>(512, 512);
 			coordinates.Fill2D(v => new Vector4(v.X, v.Y, 0, 0));
@@ -92,8 +92,8 @@ namespace Testing.Common
 			
             Shading.Phong,
             
-            Buffering.ClearDepth(),
-			Buffering.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
+            Buffers.ClearDepth(),
+			Buffers.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
 			render.EndScene();
 
 			renderStopwatch.Stop();

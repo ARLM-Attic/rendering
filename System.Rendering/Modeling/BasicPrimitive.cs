@@ -11,6 +11,143 @@ namespace System.Rendering.Modeling
     /// </summary>
     public struct Basic : IVertexedGraphicPrimitive, IIntersectableGraphicPrimitive
     {
+        internal class Triangle
+        {
+            public Vector3 V1, V2, V3;
+            public Vector3 N1, N2, N3;
+
+            public Triangle(Vector3 V1, Vector3 V2, Vector3 V3, Vector3 N1, Vector3 N2, Vector3 N3)
+            {
+                this.V1 = V1; 
+                this.V2 = V2;
+                this.V3 = V3;
+                this.N1 = N1;
+                this.N2 = N2;
+                this.N3 = N3;
+            }
+
+            public Vector3 Normal
+            {
+                get
+                {
+                    Vector3 U = V3 - V1;
+                    Vector3 V = V2 - V1;
+                    return GMath.normalize(GMath.cross(V, U));
+                }
+            }
+
+            public Vector3 ClosestTo(Vector3 target)
+            {
+                Vector3 v1 = this.V2 - this.V1;
+                Vector3 v2 = this.V3 - this.V1;
+                Vector3 v = target - this.V1;
+
+                if (GMath.dot(v1, v1) == 0)
+                {
+                    Vector3 temp = v2;
+                    v2 = v1;
+                    v1 = temp;
+                }
+
+                float a11 = GMath.dot(v1, v1);
+                float a12 = GMath.dot(v1, v2);
+                float a13 = GMath.dot(v1, v);
+                float a21 = GMath.dot(v2, v1);
+                float a22 = GMath.dot(v2, v2);
+                float a23 = GMath.dot(v2, v);
+
+                if (a11 == 0)
+                    return target;
+
+                a23 = a13 * a21 - a23 * a11;
+                a22 = a12 * a21 - a22 * a11;
+                a21 = 0;
+
+                if (a22 == 0)
+                    return target;
+                float beta = a23 / a22;
+                float alpha = (a13 - a12 * beta) / a11;
+
+                return (v1 * alpha + v2 * beta) + this.V1;
+            }
+
+            public Vector3 Reflect(Vector3 target)
+            {
+                Vector3 proj = ClosestTo(target);
+                return (proj - target) + proj;
+            }
+
+            bool Inside(Ray ray, Vector3 P1, Vector3 P2)
+            {
+                Vector3 v1 = P1 - ray.Position;
+                Vector3 v2 = P2 - ray.Position;
+                Vector3 normal = GMath.cross(v1, v2);
+                return GMath.dot(normal, ray.Direction) >= 0;
+            }
+
+            public bool Intersect(Ray ray, out IntersectInfo info)
+            {
+                info = null;
+                if (Intersect(ray))
+                    return IntersectPlane(ray, out info) && info.U >= 0 && info.V >= 0 && info.U + info.V <= 1;
+                return false;
+            }
+
+            public bool IntersectPlane(Ray ray, out IntersectInfo info)
+            {
+                float U = 0;
+                float V = 0;
+                float dist = 0;
+
+                Matrix4x4 m = new Matrix4x4(
+                    V1.X - V2.X, V3.X - V2.X, -(float)ray.Direction.X, 0,
+                    V1.Y - V2.Y, V3.Y - V2.Y, -(float)ray.Direction.Y, 0,
+                    V1.Z - V2.Z, V3.Z - V2.Z, -(float)ray.Direction.Z, 0,
+                    0, 0, 0, 1
+                    );
+
+                if (m.IsSingular)
+                {
+                    info = null;
+                    return false;
+                }
+
+                Matrix4x4 inverse = m.Inverse;
+
+                Vector4 res = GMath.mul(new Vector4(ray.Position.X - V2.X, ray.Position.Y - V2.Y, ray.Position.Z - V2.Z, 1), inverse);
+
+                U = res.X;
+                V = res.Y;
+                dist = res.Z;
+
+                info = new IntersectInfo(U, V, dist, new Maths.Triangle(this.V1, this.V2, this.V3));
+
+                return true;
+            }
+
+            public double Area
+            {
+                get
+                {
+                    double A = GMath.length(V2 - V1);
+                    double B = GMath.length(V3 - V1);
+                    double C = GMath.length(V3 - V2);
+                    return A * System.Math.Sqrt(C * C - System.Math.Pow((A * A - B * B + C * C) / (2 * A), 2)) / 2;
+                }
+            }
+
+            public double Angle(Ray ray)
+            {
+                return Math.Acos(GMath.dot(GMath.normalize(ray.Direction), this.Normal));
+            }
+
+            public bool Intersect(Ray ray)
+            {
+                bool first;
+                return ((first = Inside(ray, this.V1, this.V2)) == Inside(ray, this.V2, this.V3) && (first == Inside(ray, this.V3, this.V1)));
+            }
+        }
+
         /// <summary>
         /// BasicPrimitiveType specifying the connections and filling between vertexes.
         /// </summary>
@@ -45,6 +182,7 @@ namespace System.Rendering.Modeling
             this.StartIndex = 0;
             this.Count = indexes == null ? buffer.Length : indexes.Length;
         }
+        
         private Basic(BasicPrimitiveType type, VertexBuffer buffer, IndexBuffer indexes, int start, int count)
         {
             this.Type = type;
@@ -59,63 +197,63 @@ namespace System.Rendering.Modeling
             this.Count = count;
         }
 
-        private static IEnumerable<Vector3> UnrollTriangleFan(PositionData[] vertexes, int[] indexes)
+        private static IEnumerable<PositionNormalData> UnrollTriangleFan(PositionNormalData[] vertexes, int[] indexes)
         {
             if (indexes == null)
                 for (int i = 2; i < vertexes.Length; i++)
                 {
-                    yield return vertexes[0].Position;
-                    yield return vertexes[i - 1].Position;
-                    yield return vertexes[i].Position;
+                    yield return vertexes[0];
+                    yield return vertexes[i - 1];
+                    yield return vertexes[i];
                 }
             else
                 for (int i = 2; i < indexes.Length; i++)
                 {
-                    yield return vertexes[indexes[0]].Position;
-                    yield return vertexes[indexes[i - 1]].Position;
-                    yield return vertexes[indexes[i]].Position;
+                    yield return vertexes[indexes[0]];
+                    yield return vertexes[indexes[i - 1]];
+                    yield return vertexes[indexes[i]];
                 }
         }
 
-        private static IEnumerable<Vector3> UnrollTriangleStrip(PositionData[] vertexes, int[] indexes)
+        private static IEnumerable<PositionNormalData> UnrollTriangleStrip(PositionNormalData[] vertexes, int[] indexes)
         {
             if (indexes == null)
                 for (int i = 2; i < vertexes.Length; i++)
                 {
-                    yield return vertexes[i - 2].Position;
-                    yield return vertexes[i - 1].Position;
-                    yield return vertexes[i].Position;
+                    yield return vertexes[i - 2];
+                    yield return vertexes[i - 1];
+                    yield return vertexes[i];
                 }
             else
                 for (int i = 2; i < indexes.Length; i++)
                 {
-                    yield return vertexes[indexes[i - 2]].Position;
-                    yield return vertexes[indexes[i - 1]].Position;
-                    yield return vertexes[indexes[i]].Position;
+                    yield return vertexes[indexes[i - 2]];
+                    yield return vertexes[indexes[i - 1]];
+                    yield return vertexes[indexes[i]];
                 }
         }
 
-        private static IEnumerable<Vector3> UnrollTriangleList(PositionData[] vertexes, int[] indexes)
+        private static IEnumerable<PositionNormalData> UnrollTriangleList(PositionNormalData[] vertexes, int[] indexes)
         {
             if (indexes == null)
             {
-                Vector3[] positions = new Vector3[vertexes.Length];
+                PositionNormalData[] positions = new PositionNormalData[vertexes.Length];
                 for (int i = 0; i < vertexes.Length; i++)
-                    positions[i] = vertexes[i].Position;
+                    positions[i] = vertexes[i];
                 return positions;
             }
             else
             {
-                Vector3[] positions = new Vector3[indexes.Length];
+                PositionNormalData[] positions = new PositionNormalData[indexes.Length];
                 for (int i = 0; i < indexes.Length; i++)
-                    positions[i] = vertexes[indexes[i]].Position;
+                    positions[i] = vertexes[indexes[i]];
                 return positions;
             }
         }
 
-        private static Triangle[] UnrollTriangles(PositionData[] vertexes, int[] indexes, BasicPrimitiveType primitiveType)
+        private static Triangle[] UnrollTriangles(PositionNormalData[] vertexes, int[] indexes, BasicPrimitiveType primitiveType)
         {
-            Vector3[] positions = null;
+            PositionNormalData[] positions = null;
             switch (primitiveType)
             {
                 case BasicPrimitiveType.Triangle_Fan:
@@ -125,25 +263,26 @@ namespace System.Rendering.Modeling
                     positions = UnrollTriangleStrip(vertexes, indexes).ToArray();
                     break;
                 case BasicPrimitiveType.Triangles:
-                    positions = (Vector3[])UnrollTriangleList(vertexes, indexes);
+                    positions = UnrollTriangleList(vertexes, indexes).ToArray();
                     break;
             }
 
             Triangle[] triangles = new Triangle[positions.Length / 3];
             for (int i = 0; i < triangles.Length; i++)
-                triangles[i] = new Triangle(positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2]);
+                triangles[i] = new Triangle(positions[i * 3 + 0].Position, positions[i * 3 + 1].Position, positions[i * 3 + 2].Position, positions[i * 3 + 0].Normal, positions[i * 3 + 1].Normal, positions[i * 3 + 2].Normal);
 
             return triangles;
         }
 
         long lastVertexVersion;
-        PositionData[] positions;
+        PositionNormalData[] positions;
 
         long lastIndexVersion;
         int[] indexes;
 
         internal Triangle[] GetTriangles()
         {
+            // TODO: Fix this to use indexes between start index and start index plus count.
             switch (Type)
             {
                 case BasicPrimitiveType.Line_Loop:
@@ -158,7 +297,7 @@ namespace System.Rendering.Modeling
                 case BasicPrimitiveType.Triangle_Fan:
                     if (VertexBuffer.Version != lastVertexVersion)
                     {
-                        positions = (VertexBuffer.Clone<VertexBuffer, PositionData>()).DirectData as PositionData[];
+                        positions = (VertexBuffer.Clone<VertexBuffer, PositionNormalData>()).DirectData as PositionNormalData[];
                         lastVertexVersion = VertexBuffer.Version;
                     }
 
@@ -187,6 +326,8 @@ namespace System.Rendering.Modeling
 
             return intersections.ToArray();
         }
+
+        #region Creation
 
         public static Basic Create(BasicPrimitiveType type, VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
@@ -253,7 +394,7 @@ namespace System.Rendering.Modeling
             return new Basic(BasicPrimitiveType.Line_Loop, buffer.ToArray(), null);
         }
 
-        public static Basic LinesLoop<FVF>(params FVF[] buffer) where FVF : struct
+        public static Basic LineLoop<FVF>(params FVF[] buffer) where FVF : struct
         {
             return new Basic(BasicPrimitiveType.Line_Loop, buffer, null);
         }
@@ -278,6 +419,8 @@ namespace System.Rendering.Modeling
             return new Basic(BasicPrimitiveType.Points, buffer, null);
         }
 
+        #endregion
+
         public IntersectInfo[] Intersect(Ray ray)
         {
             return GetIntersections(ray);
@@ -286,6 +429,18 @@ namespace System.Rendering.Modeling
         VertexBuffer IVertexedGraphicPrimitive.VertexBuffer
         {
             get { return VertexBuffer; }
+        }
+
+        public IVertexedGraphicPrimitive Transform(Matrix4x4 transform)
+        {
+            return new Basic(Type, VertexBuffer.Clone(transform), Indexes.Clone(), StartIndex, Count);
+        }
+
+        public IVertexedGraphicPrimitive Transform<FVFIn, FVFOut>(Func<FVFIn, FVFOut> transform)
+            where FVFIn : struct
+            where FVFOut : struct
+        {
+            return new Basic(Type, VertexBuffer.Clone(transform), Indexes.Clone(), StartIndex, Count);
         }
     }
 
