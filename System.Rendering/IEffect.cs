@@ -46,10 +46,18 @@ namespace System.Rendering
         }
     }
 
+    /// <summary>
+    /// Represents a shader techinque, which is compossed of a
+    /// set of <see cref="Pass"/>.
+    /// </summary>
     public abstract class Technique : IEnumerable<Pass>, IDisposable
     {
         protected IRenderStatesManager RenderStates { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="Technique"/>.
+        /// </summary>
+        /// <param name="manager">An instance of <see cref="IRenderStatesManager"/> to be used by this technique.</param>
         public Technique(IRenderStatesManager manager)
         {
             if (manager == null)
