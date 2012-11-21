@@ -19,6 +19,9 @@ namespace System.Compilers.Shaders
         public Type SemanticType { get; set; }
     }
 
+    /// <summary>
+    /// A base class for semantics. DataSemantics, Samplers and others are derived from this class.
+    /// </summary>
     public abstract class Semantic
     {
         public override bool Equals(object obj)
@@ -33,6 +36,9 @@ namespace System.Compilers.Shaders
         }
     }
 
+    /// <summary>
+    /// Semantic for data of each vertex or pixel.
+    /// </summary>
     public abstract class DataSemantic : Semantic
     {
         public virtual float GetDefaultValue() { return 0f; }
@@ -76,6 +82,14 @@ namespace System.Compilers.Shaders
         {
             return 1;
         }
+    }
+
+    public class TangentSemantic : IndexedSemantic
+    {
+    }
+
+    public class BinormalSemantic : IndexedSemantic
+    {
     }
 
     public class CoordinatesSemantic : IndexedSemantic
@@ -169,6 +183,15 @@ namespace System.Compilers.Shaders
         {
             return new NormalSemantic() { Index = index };
         }
+        public static TangentSemantic Tanget(int index)
+        {
+            return new TangentSemantic { Index = index };
+        }
+        public static BinormalSemantic Binormal(int index)
+        {
+            return new BinormalSemantic { Index = index };
+        }
+
         public static CoordinatesSemantic Coordinates(int index)
         {
             return new CoordinatesSemantic() { Index = index };

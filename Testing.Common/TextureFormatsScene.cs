@@ -27,20 +27,20 @@ namespace Testing.Common
 			render.Draw(() =>
 			{
 				render.Draw(model,
-						Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y),
-						Transforming.Translate(new System.Maths.Vector3(2, 0, 0)));
+						Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y),
+						Transforms.Translate(new System.Maths.Vector3(2, 0, 0)));
 				render.Draw(model,
-						Transforming.Rotate(Environment.TickCount / 1000f, Axis.X),
-						Transforming.Translate(new System.Maths.Vector3(-2, 0, 0)));
+						Transforms.Rotate(Environment.TickCount / 1000f, Axis.X),
+						Transforms.Translate(new System.Maths.Vector3(-2, 0, 0)));
 			},
 				//Filling.Lines,
 			Materials.White.Plastic.Shinness.Shinness.Shinness.Glossy,
-			Shading.DiffuseMap(texture),
-			Lighting.AmbientLight(new Vector3(0.2f, 0.2f, 0.2f)),
-			Lighting.PointLight(new System.Maths.Vector3(1, 4, 4), Vectors.White),
-            Shading.Phong,
-			Viewing.LookAtRH(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 0, 5), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-			Projecting.PerspectiveFovRH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
+			Shaders.DiffuseMap(texture),
+			Lights.Ambient(new Vector3(0.2f, 0.2f, 0.2f)),
+			Lights.Point(new System.Maths.Vector3(1, 4, 4), Vectors.White),
+            Shaders.Phong,
+			Cameras.LookAt(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 0, 5), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+			Cameras.Perspective(render.ImageHeight / (float)render.ImageWidth),
 			Buffers.Clear(new Vector4(0.4f, 0.4f, 0.5f, 1)),
 			Buffers.ClearDepth());
 

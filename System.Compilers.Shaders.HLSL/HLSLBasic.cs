@@ -21,28 +21,24 @@ namespace System.Compilers.Shaders.HLSL
             Register(typeof(int), "int", null);
             Register(typeof(bool), "bool", null);
             Register(typeof(float), "float", null);
-            Register(typeof(double), "double", null);
             Register(typeof(byte), "byte", null);
             Register(typeof(void), "void", null);
 
             RegisterMembers(typeof(int), null);
             RegisterMembers(typeof(bool), null);
             RegisterMembers(typeof(float), null);
-            RegisterMembers(typeof(double), null);
             RegisterMembers(typeof(byte), null);
 
 
             this.FullRegisterScalarMembers<int>();
             this.FullRegisterScalarMembers<bool>();
             this.FullRegisterScalarMembers<float>();
-            this.FullRegisterScalarMembers<double>();
             this.FullRegisterScalarMembers<byte>();
 
             Dictionary<Type, string> scalars = new Dictionary<Type, string>();
             scalars[typeof(int)] = "int";
             scalars[typeof(byte)] = "byte";
             scalars[typeof(float)] = "float";
-            scalars[typeof(double)] = "double";
             scalars[typeof(bool)] = "bool";
 
             Func<MemberRegistration, bool> vecAndMatrixMemberRegistrating = m =>

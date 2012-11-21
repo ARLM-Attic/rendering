@@ -22,7 +22,6 @@ namespace System.Compilers.Shaders.GLSL
             Register(typeof(int), "int", null);
             Register(typeof(bool), "bool", null);
             Register(typeof(float), "float", null);
-            Register(typeof(double), "float", null);
             Register(typeof(byte), "byte", null);
             Register(typeof(void), "void", null);
 
@@ -41,7 +40,6 @@ namespace System.Compilers.Shaders.GLSL
             scalars[typeof(int)] = "int";
             scalars[typeof(byte)] = "byte";
             scalars[typeof(float)] = "float";
-            scalars[typeof(double)] = "float";
             scalars[typeof(bool)] = "bool";
 
             Register(typeof(Sampler1D), "sampler1D", null);

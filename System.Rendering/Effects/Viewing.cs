@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Rendering.RenderStates;
 using System.Maths;
+using System.Rendering.Effects;
 
 namespace System.Rendering.Effects
 {
@@ -28,85 +29,66 @@ namespace System.Rendering.Effects
         {
             return new Viewing(new ViewState(viewMatrix));
         }
+    }
+}
 
-        public static Viewing LookAtLH(Vector3 from, Vector3 target, Vector3 up)
-        {
-            return (Viewing)Matrices.LookAtLH(from, target, up);
-        }
-
-        public static Viewing LookAtRH(Vector3 from, Vector3 target, Vector3 up)
-        {
-            return (Viewing)Matrices.LookAtRH(from, target, up);
-        }
+namespace System.Rendering
+{
+    public enum CoordinatesSystemHandRule
+    {
+        RightHandled,
+        LeftHandled
     }
 
-    public class Camera : Viewing
+    public class Cameras
     {
-        public Camera() : this ((Vector3)Vectors.Front, (Vector3)Vectors.O, (Vector3)Vectors.Up)
+        public static Viewing LookAt(Vector3 from, Vector3 target, Vector3 up)
         {
+            return LookAt(from, target, up, CoordinatesSystemHandRule.LeftHandled);
         }
 
-        public static new Camera LookAt(Vector3 from, Vector3 target, Vector3 up)
+        public static Viewing LookAt(Vector3 from, Vector3 target, Vector3 up, CoordinatesSystemHandRule handRule)
         {
-            Camera camera = new Camera(from, target, up);
-            return camera;
+            switch (handRule){
+                case CoordinatesSystemHandRule.LeftHandled: return (Viewing)Matrices.LookAtLH(from, target, up);
+                case CoordinatesSystemHandRule.RightHandled: return (Viewing)Matrices.LookAtLH(from, target, up);
+                default: throw new ArgumentOutOfRangeException("handRule");
+            }
         }
 
-        Vector3 from, target, up;
-
-        public Vector3 Normal
+        public static Projecting Perspective (float fieldOfView, float aspectRatio, float nearPlane, float farPlane, CoordinatesSystemHandRule handRule)
         {
-            get { return up; }
-            set { up = value; UpdateState(); }
+            switch (handRule)
+            {
+                case CoordinatesSystemHandRule.LeftHandled: return (Projecting)Matrices.PerspectiveFovLH(fieldOfView, aspectRatio, nearPlane, farPlane);
+                case CoordinatesSystemHandRule.RightHandled: return (Projecting)Matrices.PerspectiveFovRH(fieldOfView, aspectRatio, nearPlane, farPlane);
+                default: throw new ArgumentOutOfRangeException("handRule");
+            }
         }
 
-        private void UpdateState()
+        public static Projecting Perspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
         {
-            this.state = new ViewState(Matrices.LookAtLH(from, target, up));
+            return Perspective(fieldOfView, aspectRatio, nearPlane, farPlane, CoordinatesSystemHandRule.LeftHandled);
         }
 
-        public Vector3 Direction
+        public static Projecting Perspective(float fieldOfView, float aspectRatio)
         {
-            get { return Target - Position; }
-            set { Target = Position + value; }
+            return Perspective(fieldOfView, aspectRatio, 0.1f, 1000);
         }
 
-        public void Move(Vector3 direction)
+        public static Projecting Perspective(float aspectRatio)
         {
-            from = from + direction;
-            target = target + direction;
-            up = (Vector3)Vectors.Up;
-            UpdateState();
+            return Perspective(GMath.PiOver4, aspectRatio);
         }
 
-        public Vector3 Target
+        public static Projecting Orthographic(float width, float height,float nearPlane, float farPlane,  CoordinatesSystemHandRule handRule )
         {
-            get { return target; }
-            set { target = value; UpdateState(); }
-        }
-
-        public Vector3 Position
-        {
-            get { return from; }
-            set { from = value; UpdateState(); }
-        }
-
-        public void LookAt(float x, float y, float z)
-        {
-            Target = new Vector3(x, y, z);
-        }
-
-        public Camera(Vector3 from, Vector3 target, Vector3 up)
-            :base (new ViewState (Matrices.LookAtLH (from, target, up)))
-        {
-            this.from = from;
-            this.target = target;
-            this.up = up;
-        }
-
-        public void RotateAroundTarget(float p, Vector3 vector)
-        {
-            this.Position = (Vector3)GMath.mul(new Vector4((this.Position - this.Target), 1), Matrices.Rotate(p, vector)) + this.target;
+            switch (handRule)
+            {
+                case CoordinatesSystemHandRule.LeftHandled: return Projecting.OrthoLH(width, height, nearPlane, farPlane);
+                case CoordinatesSystemHandRule.RightHandled: return Projecting.OrthoRH(width, height, nearPlane, farPlane);
+                default: throw new ArgumentOutOfRangeException("handRule");
+            }
         }
     }
 }

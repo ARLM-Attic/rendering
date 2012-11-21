@@ -111,7 +111,7 @@ namespace System.Rendering.Direct3D9
                     D3D.ColorWriteEnable cwe = (D3D.ColorWriteEnable)((int)D3D.ColorWriteEnable.Red * red | (int)ColorMask.Green * green | (int)ColorMask.Blue * blue | (int)ColorMask.Alpha * alpha);
                     device.SetRenderState ( D3D.RenderState.ColorWriteEnable, cwe);
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                         device.Clear(D3D.ClearFlags.Target, value.DefaultValue.ToARGB(), 0, 0);
                 }
             }
@@ -131,7 +131,7 @@ namespace System.Rendering.Direct3D9
                     device.SetRenderState(D3D.RenderState.ZWriteEnable , value.WriteEnable);
                     device.SetRenderState(D3D.RenderState.ZFunc , Direct3D9Tools.FromCompare(value.Function));
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                         device.Clear(D3D.ClearFlags.ZBuffer, Color.Black, (float)value.DefaultValue, 0);
                 }
             }
@@ -174,7 +174,8 @@ namespace System.Rendering.Direct3D9
                         Diffuse = value.Diffuse,
                         Emissive = value.Emission,
                         Shininess = (float)value.SpecularSharpness,
-                        Specular = value.Specular
+                        Specular = value.Specular,
+                        Opacity = value.Opacity
                     };
                 }
             }

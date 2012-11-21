@@ -67,6 +67,7 @@
     <Compile Include="Common\Stacking.cs" />
     <Compile Include="CustomPixels.cs" />
     <Compile Include="Datas.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Effects\Blending.cs" />
     <Compile Include="Effects\Buffers.cs" />
     <Compile Include="Effects\Culling.cs" />
@@ -146,7 +147,7 @@
     <Compile Include="ServicesExtensors.cs" />
     <Compile Include="Services\LoaderService.cs" />
     <Compile Include="Services\MeshService.cs" />
-    <Compile Include="Shading.cs" />
+    <Compile Include="Shaders.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Compilers.Shaders\System.Compilers.Shaders.csproj">

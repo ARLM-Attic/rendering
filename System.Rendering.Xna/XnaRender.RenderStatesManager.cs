@@ -101,7 +101,7 @@ namespace System.Rendering.Xna
                     int blue = Convert.ToInt32((value.Mask & ColorMask.Blue) != 0);
                     int alpha = Convert.ToInt32((value.Mask & ColorMask.Alpha) != 0);
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                         Device.Clear(ClearOptions.Target, XnaTools.ToXnaVector(value.DefaultValue), 0, 0);
                 }
             }
@@ -118,7 +118,7 @@ namespace System.Rendering.Xna
                     depthStencilState.DepthBufferWriteEnable = value.WriteEnable;
                     depthStencilState.DepthBufferFunction = XnaTools.ToCompareFunction(value.Function);
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                         Device.Clear(ClearOptions.DepthBuffer, XnaTools.ToXnaColor(Vectors.Black), (float)value.DefaultValue, 0);
 
                     Device.DepthStencilState = depthStencilState.Clone();
@@ -142,7 +142,7 @@ namespace System.Rendering.Xna
                     //depthStencilState.StencilDepthBufferFail = Direct3DTools.ToStencilOperation(value.DepthFails);
                     //depthStencilState.ReferenceStencil = value.Reference;
 
-                    //if (value.ClearOnSet)
+                    //if (value.ClearOnSet && !Restoring)
                     //  Device.Clear(ClearOptions.Stencil, Direct3DTools.ToXnaVector(Vectors.Black), 0, 0);
 
                     //Device.DepthStencilState = depthStencilState.Clone();
@@ -206,7 +206,8 @@ namespace System.Rendering.Xna
                         Diffuse = value.Diffuse,
                         Emissive = value.Emission,
                         Shininess = (float)value.SpecularSharpness,
-                        Specular = value.Specular
+                        Specular = value.Specular,
+                        Opacity = value.Opacity
                     };
                 }
             }

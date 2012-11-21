@@ -23,54 +23,7 @@ namespace System.Rendering.Effects
 {
     public class Lighting : BlendableEffect<LightingState>
     {
-        public static Lighting Enabled { get { return new Lighting(); } }
-
-        public static Lighting Disabled { get { return new Lighting() { Enable = false }; } }
-
         public Lighting() : base(LightingState.Enabled) {
-        }
-
-        public static Lighting PointLight(Vector3 position, Vector3 color)
-        {
-            Lighting l = new Lighting();
-            l.BlendMode = StateBlendMode.Add;
-            PointLightSource light = new PointLightSource()
-            {
-                Range = 1000,
-                Position = position,
-                Ambient = new Vector3 (0,0,0),
-                Diffuse = color,
-                Specular = new Vector3 (1, 1, 1) 
-            };
-            l.Add(light);
-            return l;
-        }
-
-        public static Lighting DirectionalLight(Vector3 direction, Vector3 color)
-        {
-            Lighting l = new Lighting();
-            l.BlendMode = StateBlendMode.Add;
-            DirectionalLightSource light = new DirectionalLightSource()
-            {
-                Direction = direction,
-                Ambient = new Vector3(0.0f, 0.0f, 0.0f),
-                Diffuse = color,
-                Specular = new Vector3(1.0f, 1.0f, 1.0f),
-            };
-            l.Add(light);
-            return l;
-        }
-
-        public static Lighting AmbientLight(Vector3 ambient)
-        {
-            Lighting l = new Lighting();
-            l.BlendMode = StateBlendMode.Add;
-            AmbientLightSource light = new AmbientLightSource()
-            {
-                Ambient = ambient
-            };
-            l.Add(light);
-            return l;
         }
 
         protected override LightingState Blend(LightingState previus)
@@ -117,5 +70,59 @@ namespace System.Rendering.Effects
             get { return state.Enable; }
             set { state = (value) ? state.SwitchingOn() : state.SwitchingOff(); }
         }
+    }
+}
+
+namespace System.Rendering
+{
+    public class Lights
+    {
+        public static Lighting Enabled { get { return new Lighting(); } }
+
+        public static Lighting Disabled { get { return new Lighting() { Enable = false }; } }
+
+        public static Lighting Point(Vector3 position, Vector3 color)
+        {
+            Lighting l = new Lighting();
+            l.BlendMode = StateBlendMode.Add;
+            PointLightSource light = new PointLightSource()
+            {
+                Range = 1000,
+                Position = position,
+                Ambient = new Vector3(0, 0, 0),
+                Diffuse = color,
+                Specular = new Vector3(1, 1, 1)
+            };
+            l.Add(light);
+            return l;
+        }
+
+        public static Lighting Directional(Vector3 direction, Vector3 color)
+        {
+            Lighting l = new Lighting();
+            l.BlendMode = StateBlendMode.Add;
+            DirectionalLightSource light = new DirectionalLightSource()
+            {
+                Direction = direction,
+                Ambient = new Vector3(0.0f, 0.0f, 0.0f),
+                Diffuse = color,
+                Specular = new Vector3(1.0f, 1.0f, 1.0f),
+            };
+            l.Add(light);
+            return l;
+        }
+
+        public static Lighting Ambient(Vector3 ambient)
+        {
+            Lighting l = new Lighting();
+            l.BlendMode = StateBlendMode.Add;
+            AmbientLightSource light = new AmbientLightSource()
+            {
+                Ambient = ambient
+            };
+            l.Add(light);
+            return l;
+        }
+
     }
 }

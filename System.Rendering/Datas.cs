@@ -47,6 +47,33 @@ namespace System.Rendering
         public Vector3 Position;
         [Normal]
         public Vector3 Normal;
+        [Tangent]
+        public Vector3 Tangent;
+        [Binormal]
+        public Vector3 Binormal;
+        [Coordinates]
+        public Vector2 Coordinates;
+        [Color(0)]
+        public Vector4 Diffuse;
+        [Color(1)]
+        public Vector3 Specular;
+    }
+
+    [ShaderType]
+    public struct ProjectedSurfaceData
+    {
+        [Projected]
+        public Vector4 Projected;
+        [Position]
+        public Vector3 Position;
+        [Normal]
+        public Vector3 Normal;
+        [Tangent]
+        public Vector3 Tangent;
+        [Binormal]
+        public Vector3 Binormal;
+        [Coordinates]
+        public Vector2 Coordinates;
         [Color(0)]
         public Vector4 Diffuse;
         [Color(1)]

@@ -21,6 +21,7 @@ using System.Rendering.Resourcing;
 
 namespace System.Rendering.Effects
 {
+    [Obsolete ("Please use Shaders.DiffuseMap instead.")]
     public class Texturing : Effect
     {
         private Texturing(ISampler[] samplers, TextureStage[] stages)

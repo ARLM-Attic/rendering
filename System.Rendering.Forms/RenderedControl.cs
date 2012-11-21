@@ -210,9 +210,9 @@ namespace System.Rendering.Forms
 
     public class RenderEventArgs : EventArgs
     {
-        public readonly IRenderDevice Render;
+        public readonly IControlRenderDevice Render;
 
-        public RenderEventArgs(IRenderDevice render)
+        public RenderEventArgs(IControlRenderDevice render)
         {
             this.Render = render;
         }

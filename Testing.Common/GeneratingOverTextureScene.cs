@@ -37,11 +37,11 @@ namespace Testing.Common
 
             textureRender.Draw(model1,
                     Materials.White.Glossy.Glossy.Shinness.Shinness,
-                    Transforming.Rotate(Environment.TickCount / 1000f, new Vector3(0, 1f, 0f)),
-                    Lighting.PointLight(new Vector3(3, 1, -4), new Vector3(1, 1, 1)),
-                    Viewing.LookAtLH(new Vector3(0, 0, -4), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-                    Projecting.PerspectiveFovLH((float)Math.PI / 4, 1, 1, 1000),
-                    Shading.Phong,
+                    Transforms.Rotate(Environment.TickCount / 1000f, new Vector3(0, 1f, 0f)),
+                    Lights.Point(new Vector3(3, 1, -4), new Vector3(1, 1, 1)),
+                    Cameras.LookAt(new Vector3(0, 0, -4), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+                    Cameras.Perspective(1),
+                    Shaders.Phong,
                     Buffers.Clear(new Vector4(1, 0, 0, 1)),
                     Buffers.ClearDepth());
 
@@ -50,23 +50,23 @@ namespace Testing.Common
 			render.Draw(
 			() =>
 			{
-				render.Draw(model1, Transforming.Translate(2, 0, 0)
+				render.Draw(model1, Transforms.Translate(2, 0, 0)
 						, Materials.White.Shinness.Shinness.Glossy
-                        , Shading.DiffuseMap(diffuseTexture)
+                        , Shaders.DiffuseMap(diffuseTexture)
 						);
 
                 render.Draw(model2,
-                        Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y),
-                        Transforming.Translate(-2, 0, 0),
+                        Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y),
+                        Transforms.Translate(-2, 0, 0),
                         Materials.White.Shinness.Shinness.Glossy.Glossy,
-                        Shading.DiffuseMap(diffuseTexture2)
+                        Shaders.DiffuseMap(diffuseTexture2)
                         );
 			},
 
-					Lighting.PointLight(new Vector3(0, 5, -3), new Vector3(1, 1, 1)),
-					Viewing.LookAtLH(new Vector3(2, 1, -6), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-					Projecting.PerspectiveFovLH((float)Math.PI / 4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
-                    Shading.Phong,
+					Lights.Point(new Vector3(0, 5, -3), new Vector3(1, 1, 1)),
+					Cameras.LookAt(new Vector3(2, 1, -6), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+					Cameras.Perspective(render.GetAspectRatio()),
+                    Shaders.Phong,
 					Buffers.Clear(new Vector4(1, 0, 1, 1)),
 					Buffers.ClearDepth());
 

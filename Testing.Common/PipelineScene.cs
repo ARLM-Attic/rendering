@@ -31,12 +31,12 @@ namespace Testing.Common
                 new PixelShaderEffect<PositionProjectedData, ColorData>(In => new ColorData { Color = new Vector4(In.Projected.Z / In.Projected.W, In.Projected.Z / In.Projected.W, In.Projected.Z / In.Projected.W, 1) }));
             },
                 Materials.White.Plastic.Shinness.Glossy,
-                Lighting.PointLight(new Vector3(2, 5, 3), new Vector3(1, 1, 1)),
-                Viewing.LookAtLH(new Vector3(1, 1, 3), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-                Projecting.PerspectiveFovLH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1f, 10),
+                Lights.Point(new Vector3(2, 5, 3), new Vector3(1, 1, 1)),
+                Cameras.LookAt(new Vector3(1, 1, 3), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+                Cameras.Perspective(GMath.PiOver4, render.GetAspectRatio(), 1f, 10),
                 Buffers.Clear(new Vector4(0.3f, 0.3f, 0.3f, 1)),
                 Buffers.ClearDepth(),
-                Shading.VertexTransform);
+                Shaders.DefaultVertexTransform);
 
             render.EndScene();
         }

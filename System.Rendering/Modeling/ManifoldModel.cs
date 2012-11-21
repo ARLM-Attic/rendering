@@ -144,8 +144,8 @@ namespace System.Rendering.Modeling
                     Vector3 positionPlusDx = manifold[u + epsilon, v].Position;
                     Vector3 positionPlusDy = manifold[u, v + epsilon].Position;
 
-                    vertexes[i * (slices + 1) + j] = VERTEX.Create(position, Vectors.Front, new Vector2(u, v));
-                    //vertexes[i * (slices + 1) + j] = VERTEX.Create(position, GMath.normalize(GMath.cross(positionPlusDy - position, positionPlusDx - position)), new Vector2(u, v));
+                    //vertexes[i * (slices + 1) + j] = VERTEX.Create(position, Vectors.Front, new Vector2(u, v));
+                    vertexes[i * (slices + 1) + j] = VERTEX.Create(position, GMath.normalize(GMath.cross(positionPlusDx - position, positionPlusDy - position)), new Vector2(u, v));
                 }
 
             return vertexes;

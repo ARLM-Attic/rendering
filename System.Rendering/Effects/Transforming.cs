@@ -19,9 +19,9 @@ using System.Rendering.Resourcing;
 
 namespace System.Rendering.Effects
 {
-    public class Transforming : AppendableEffect<WorldState>
+    public sealed class Transforming : AppendableEffect<WorldState>
     {
-        private Transforming(Matrix4x4 transform)
+        public Transforming(Matrix4x4 transform)
             : base(new WorldState(transform))
         {
             AppendMode = Effects.AppendMode.Append;
@@ -47,12 +47,18 @@ namespace System.Rendering.Effects
         {
             return new Transforming(transform);
         }
+    }
+}
+namespace System.Rendering
+{
+    using System.Rendering.Effects;
 
+    public static class Transforms
+    {
         public static Transforming Fixed(Matrix4x4 transform)
         {
             return new Transforming(transform) { AppendMode = AppendMode.Replace };
         }
-
         public static Transforming Translate(FLOATINGTYPE x, FLOATINGTYPE y, FLOATINGTYPE z)
         {
             return (Transforming)Matrices.Translate(x, y, z);
@@ -65,21 +71,18 @@ namespace System.Rendering.Effects
         {
             return (Transforming)Matrices.Rotate(angle, direction);
         }
-
         public static Transforming Rotate(FLOATINGTYPE angle, Axis axis)
         {
             return (Transforming)Matrices.Rotate(angle,
-                GMath.normalize (new Vector3(
+                GMath.normalize(new Vector3(
                 1 * Convert.ToInt32((axis & Axis.X) != 0),
                 1 * Convert.ToInt32((axis & Axis.Y) != 0),
                 1 * Convert.ToInt32((axis & Axis.Z) != 0))));
         }
-
         public static Transforming Scale(FLOATINGTYPE sx, FLOATINGTYPE sy, FLOATINGTYPE sz)
         {
             return (Transforming)Matrices.Scale(sx, sy, sz);
         }
-
         public static Transforming Scale(FLOATINGTYPE s)
         {
             return Scale(s, s, s);

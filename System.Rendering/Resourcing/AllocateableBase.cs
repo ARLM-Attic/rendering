@@ -18,6 +18,7 @@ namespace System.Rendering.Resourcing
         protected AllocateableBase(IRenderDevice render)
         {
             this._Render = render;
+            this._Location = render == null ? Location.User : Location.Device;
         }
 
         protected abstract Location OnClone(AllocateableBase toFill, IRenderDevice render);

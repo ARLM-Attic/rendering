@@ -191,6 +191,20 @@ namespace System
         }
     }
 
+    [CompileSemanticAs(SemanticType = typeof(TangentSemantic))]
+    public class TangentAttribute : IndexedComponentAttribute
+    {
+        public TangentAttribute() : this(0) { }
+        public TangentAttribute(int index) : base(index) { }
+    }
+
+    [CompileSemanticAs(SemanticType = typeof(BinormalSemantic))]
+    public class BinormalAttribute : IndexedComponentAttribute
+    {
+        public BinormalAttribute() : this(0) { }
+        public BinormalAttribute(int index) : base(index) { }
+    }
+
     [CompileSemanticAs(SemanticType = typeof(WeightSemantic))]
     public class WeightAttribute : IndexedComponentAttribute
     {

@@ -16,11 +16,14 @@ using System.Text;
 using System.Rendering.RenderStates;
 using System.Rendering.Resourcing;
 using System.Maths;
+using System.Rendering.Effects;
 
-namespace System.Rendering.Effects
+namespace System.Rendering
 {
-    public static class AlphaBlending
+    public static class AlphaBlends
     {
+        public static Effect Disable { get { return new Effect<BlendOperationState>(BlendOperationState.Disable); } }
+
         public static IEffect Light
         {
             get
@@ -37,13 +40,13 @@ namespace System.Rendering.Effects
             }
         }
         
-        public static Transparency Opacity(float opacity)
+        public static IEffect Opacity(float opacity)
         {
             return new Transparency(opacity);
         }        
     }
 
-    public class Transparency : Effect
+    class Transparency : Effect
     {
         public Transparency():this (1){
         }
