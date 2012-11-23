@@ -10,7 +10,7 @@
 /// 2) Manifold models created by parametrization of a point, curve or surfaces.
 /// 3) Single user primitive as a model.
 /// 4) Custom model implementation by grouping several model parts.
-/// 5) CSG construction of a model.
+/// 5) Csg models.
 
 using System;
 using System.Collections.Generic;
@@ -155,14 +155,14 @@ namespace Tutorials.Modeling
             /// Models class support csg operations between models. Union receive several models to join, Intersect receives two models to get
             /// the intersection model and Subtract receives the two models to subtract the second solid to the first one.
             /// All these operations returns a Mesh object with the result solid. Those operations works with any model but it should be used with Two-Manifold models.
-            csg = Models.Subtract(
-                    Models.Sphere.Transformed(Matrices.Scale(1f, 1f, 1f)),
-                    Models.Union(
-                        Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f),
-                        Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(1, 0, 0)),
-                        Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(0, 0, 1)))
-                    ).Allocate(render);
+            var cross = Models.Union(
+							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f),
+							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(1, 0, 0)),
+							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(0, 0, 1))).Scaled(0.7f, 0.7f, 0.7f);
 
+						var intersection = Models.Intersection(Models.Cube.Translated(-0.5f, -0.5f, -0.5f), Models.Sphere.Scaled(0.7f, 0.7f, 0.7f));
+
+						csg = Models.Subtract(intersection, cross).Allocate(render);
             #endregion
         }
 
@@ -217,7 +217,6 @@ namespace Tutorials.Modeling
                     Transforms.Translate(-4, 0, 0),
                     Transforms.Rotate(2 * GMath.Pi / 5 * 2, Axis.Y),
                     Materials.White.Glossy.Glossy.Shinness.Shinness);
-
                 render.Draw(group,
                     Transforms.Rotate((float)-stopwatch.Elapsed.TotalSeconds, Axis.Y | Axis.X),
                     Transforms.Translate(-4, 0, 0),
