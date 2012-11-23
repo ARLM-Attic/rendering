@@ -182,7 +182,10 @@ namespace System.Rendering
             return new SingleModel<GP>(primitive);
         }
 
-
+				public static IModel Union(IModel model1, IModel model2)
+				{
+					return CSGOperations.Union(model1, model2);
+				}
 
         public static IModel Union(params IModel[] models)
         {
@@ -192,7 +195,7 @@ namespace System.Rendering
             IModel result = models[0];
 
             for (int i = 1; i < models.Length; i++)
-                result = Models._Union(result, models[i]);
+                result = Models.Union(result, models[i]);
 
             return result;
         }
