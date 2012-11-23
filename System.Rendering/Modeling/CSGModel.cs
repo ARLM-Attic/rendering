@@ -377,7 +377,12 @@ namespace System.Rendering.Modeling
         public static Mesh Union(IModel model1, IModel model2)
         {
             Node a = CreateNode(model1);
+						if (a == null)
+							return model2.ToMesh();
+
             Node b = CreateNode(model2);
+						if (b == null)
+							return model1.ToMesh();
 
             var polygonsA = a.GetPolygons(b, Node.Side.Outside);
             var polygonsB = b.GetPolygons(a, Node.Side.Outside);
@@ -388,7 +393,12 @@ namespace System.Rendering.Modeling
         public static Mesh Intersect(IModel model1, IModel model2)
         {
             Node a = CreateNode(model1);
+						if (a == null)
+							return Mesh<PositionNormalData>.Empty;
+
             Node b = CreateNode(model2);
+						if (b == null)
+							return Mesh<PositionNormalData>.Empty;
 
             var polygonsA = a.GetPolygons(b, Node.Side.Inside);
             var polygonsB = b.GetPolygons(a, Node.Side.Inside);
@@ -399,11 +409,10 @@ namespace System.Rendering.Modeling
         public static Mesh Subtract(IModel model1, IModel model2)
         {
             Node a = CreateNode(model1);
-
-            if (a == null) return Mesh<PositionNormalData>.Empty;
+            if (a == null) 
+							return Mesh<PositionNormalData>.Empty;
 
             Node b = CreateNode(model2);
-
             if (b == null)
                 return model1.ToMesh();
 

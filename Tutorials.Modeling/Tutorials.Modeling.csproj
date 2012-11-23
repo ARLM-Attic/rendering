@@ -121,6 +121,10 @@
       <Project>{7CC53971-50D9-4F7B-9076-3F989128016C}</Project>
       <Name>System.Rendering.SlimDX</Name>
     </ProjectReference>
+    <ProjectReference Include="..\System.Rendering.Xna\System.Rendering.Xna.csproj">
+      <Project>{416DD1D6-38A3-4E76-8A3E-D88C6B248D31}</Project>
+      <Name>System.Rendering.Xna</Name>
+    </ProjectReference>
     <ProjectReference Include="..\System.Rendering\System.Rendering.csproj">
       <Project>{F4AD4314-35A4-495E-83AB-35E851C9075A}</Project>
       <Name>System.Rendering</Name>

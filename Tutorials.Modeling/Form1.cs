@@ -6,6 +6,7 @@
 /// 2) Manifold models created by parametrization of a point, curve or surfaces.
 /// 3) Single user primitive as a model.
 /// 4) Custom model implementation by grouping several model parts.
+/// 5) Csg models.
 
 using System;
 using System.Collections.Generic;
@@ -138,14 +139,13 @@ namespace Tutorials.Modeling
             #region CSG with models
 
             var cross = Models.Union(
-                Models.Union (Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f), Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(1, 0, 0))),
-                Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(0, 0, 1)));
-            //csg = cross.Allocate(render);
+							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f),
+							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(1, 0, 0)),
+							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(0, 0, 1))).Scaled(0.7f, 0.7f, 0.7f);
 
-            csg = Models.Subtract(
-                    Models.Sphere.Transformed(Matrices.Scale(1f, 1f, 1f)),
-                cross
-                    ).Allocate(render);
+						var intersection = Models.Intersection(Models.Cube.Translated(-0.5f, -0.5f, -0.5f), Models.Sphere.Scaled(0.7f, 0.7f, 0.7f));
+
+						csg = Models.Subtract(intersection, cross).Allocate(render);
 
             #endregion
         }
@@ -176,29 +176,35 @@ namespace Tutorials.Modeling
 
             render.Draw(() =>
             {
-                //render.Draw(basic,
-                //    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-                //    Transforming.Translate(-4, 0, 0),
-                //    Transforming.Rotate(0, Axis.Y),
-                //    Materials.WhiteSmoke.Glossy.Glossy.Shinness.Shinness);
+							//render.Draw(basic,
+							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
+							//    Transforming.Translate(-4, 0, 0),
+							//    Transforming.Rotate(0, Axis.Y),
+							//    Materials.WhiteSmoke.Glossy.Glossy.Shinness.Shinness);
 
-                //render.Draw(manifoldModel,
-                //    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-                //    Transforming.Translate(-4, 0, 0),
-                //    Transforming.Rotate(GMath.Pi / 2, Axis.Y), 
-                //    Materials.LightBlue.Glossy.Glossy.Shinness.Shinness);
+							//render.Draw(manifoldModel,
+							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
+							//    Transforming.Translate(-4, 0, 0),
+							//    Transforming.Rotate(GMath.Pi / 2, Axis.Y),
+							//    Materials.LightBlue.Glossy.Glossy.Shinness.Shinness);
 
-                //render.Draw(primitive,
-                //    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-                //    Transforming.Translate(-4, 0, 0),
-                //    Transforming.Rotate(2 * GMath.Pi / 2, Axis.Y),
-                //    Materials.White.Glossy.Glossy.Shinness.Shinness);
+							//render.Draw(primitive,
+							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
+							//    Transforming.Translate(-4, 0, 0),
+							//    Transforming.Rotate(2 * GMath.Pi / 2, Axis.Y),
+							//    Materials.White.Glossy.Glossy.Shinness.Shinness);
 
-                render.Draw(csg,
-                   Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-                   Transforming.Translate(-4, 0, 0),
-                   Transforming.Rotate(3 * GMath.Pi / 2, Axis.Y),
-                   Materials.Red.Glossy.Glossy.Shinness.Shinness);
+							//render.Draw(group,
+							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
+							//    Transforming.Translate(-4, 0, 0),
+							//    Transforming.Rotate(2 * GMath.Pi / 2, Axis.Y),
+							//    Materials.White.Glossy.Glossy.Shinness.Shinness);
+
+							render.Draw(csg,
+								 Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
+								 Transforming.Translate(-4, 0, 0),
+								 Transforming.Rotate(3 * GMath.Pi / 2, Axis.Y),
+								 Materials.Red.Glossy.Glossy.Shinness.Shinness);
             },
                 Culling.None,
                 filling ? Filling.Fill : Filling.Lines,

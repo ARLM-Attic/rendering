@@ -182,11 +182,15 @@ namespace System.Rendering
             return new SingleModel<GP>(primitive);
         }
 
-
         public static IModel Union(IModel model1, IModel model2)
         {
             return CSGOperations.Union(model1, model2);
         }
+
+				public static IModel Union(params IModel[] models)
+				{
+					return models.Aggregate((m1, m2) => Union(m1, m2));	
+				}
 
         public static IModel Intersection(IModel model1, IModel model2)
         {
