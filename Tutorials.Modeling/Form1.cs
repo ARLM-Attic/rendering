@@ -1,7 +1,11 @@
 ﻿/// Tutorial 2. Modeling
 /// This tutorial shows some modeling tools in Rendering.
+/// Model objects are in charge of drawing primitive using some tessellation tools provided by a tessellator object.
+/// Primitive represents the geometrical structure of a solid. They are mostly represented by vertexes and each vertex represents a set of data
+/// foreach surface point. Rendering supports flexible vertex formats using structs and semantics to its fields.
+
 /// In this code we use some features like models creation, transformation, grouping.
-/// In this tutorial we show four kind of basic model conceptions...
+/// In this tutorial we show five kind of basic model conceptions...
 /// 1) Basic models like cube, sphere, cylinder, teapot.
 /// 2) Manifold models created by parametrization of a point, curve or surfaces.
 /// 3) Single user primitive as a model.
@@ -20,11 +24,9 @@ using System.Rendering.Direct3D9;
 using System.Rendering;
 using System.Maths;
 using System.Rendering.Modeling;
-using System.Rendering.Forms;
-using System.Rendering.Effects;
 using System.Rendering.OpenGL;
 using System.Rendering.Resourcing;
-using System.Compilers.Shaders;
+using System.Diagnostics;
 
 namespace Tutorials.Modeling
 {
@@ -43,13 +45,18 @@ namespace Tutorials.Modeling
         {
             if (e.KeyCode == Keys.F)
                 filling = !filling;
+
+            if (e.KeyCode == Keys.Space)
+                if (stopwatch.IsRunning)
+                    stopwatch.Stop();
+                else
+                    stopwatch.Start();
         }
 
         IModel basic;
         IModel manifoldModel;
         IModel primitive;
         IModel group;
-
         IModel csg;
 
         bool filling = true;
@@ -87,7 +94,7 @@ namespace Tutorials.Modeling
 
             // Using directly the corresponding manifold model with the manifold object as parameter.
             // The resolution of the model is passed as well. If not slices or stacks are provider, it will be constructed with 32.
-            manifoldModel = new SurfaceModel(Manifold.Surface((u, v) => new Vector3(u, GMath.sin(u) * GMath.cos(v), v))).Allocate(render);
+            manifoldModel = new SurfaceModel(Manifold.Surface((u, v) => new Vector3(u, GMath.sin(u) * GMath.cos(v), v)), 32, 32, false).Allocate(render);
 
             #endregion
 
@@ -118,10 +125,10 @@ namespace Tutorials.Modeling
 
             // Using directly the single model class.
             primitive = new SingleModel<Basic>(Basic.TriangleFan(new MyPositionNormalColorData[] {
-                MyPositionNormalColorData.Create (new Vector3 (0,0,0), new Vector3 (0,0,1), new Vector4 (1,1,1,1)),
-                MyPositionNormalColorData.Create (new Vector3 (1,0,0), new Vector3 (0,0,1), new Vector4 (1,0,0,1)),
-                MyPositionNormalColorData.Create (new Vector3 (1,1,0), new Vector3 (0,0,1), new Vector4 (1,1,0,1)),
-                MyPositionNormalColorData.Create (new Vector3 (0,1,0), new Vector3 (0,0,1), new Vector4 (0,1,0,1))
+                MyPositionNormalColorData.Create (new Vector3 (0,0,0), new Vector3 (0,0,-1), new Vector4 (1,1,1,1)),
+                MyPositionNormalColorData.Create (new Vector3 (1,0,0), new Vector3 (0,0,-1), new Vector4 (1,0,0,1)),
+                MyPositionNormalColorData.Create (new Vector3 (1,1,0), new Vector3 (0,0,-1), new Vector4 (1,1,0,1)),
+                MyPositionNormalColorData.Create (new Vector3 (0,1,0), new Vector3 (0,0,-1), new Vector4 (0,1,0,1))
             })).Allocate(render);
 
             #endregion
@@ -129,15 +136,23 @@ namespace Tutorials.Modeling
             #region Groups of models treated like just one.
 
             /// A group of models can be treated as a model. To get this functionallity easy to use, we design the ModelGroup class.
-            /// This class can be used directly (passing children models as parameters in constructor) or by inheritance.
+            /// This class can be used directly (passing children models as parameters in constructor of ModelGroup type) or by inheritance.
+            /// Note: Grouping has not same effect that Union. (Union is a CSG operation that removes internal surfaces).
 
             // Inherited from Model group...
             group = new Table().Allocate(render);
+            //// Using ModelGroup class directly.
+            //group = new ModelGroup(Models.Cube, Models.Sphere.Translated(1, 0, 0));
+            //// Using Group method in Models class.
+            //group = Models.Group(Models.Cube, Models.Sphere.Translated(1, 0, 0));
 
             #endregion
 
             #region CSG with models
 
+            /// Models class support csg operations between models. Union receive several models to join, Intersect receives two models to get
+            /// the intersection model and Subtract receives the two models to subtract the second solid to the first one.
+            /// All these operations returns a Mesh object with the result solid. Those operations works with any model but it should be used with Two-Manifold models.
             var cross = Models.Union(
 							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f),
 							Models.Cylinder.Translated(0, -0.5f, 0).Scaled(0.5f, 2, 0.5f).Rotated(GMath.Pi / 2, new Vector3(1, 0, 0)),
@@ -146,13 +161,12 @@ namespace Tutorials.Modeling
 						var intersection = Models.Intersection(Models.Cube.Translated(-0.5f, -0.5f, -0.5f), Models.Sphere.Scaled(0.7f, 0.7f, 0.7f));
 
 						csg = Models.Subtract(intersection, cross).Allocate(render);
-
             #endregion
         }
 
         // This attribute is not needed for vertex declaration only. But probably a vertex definition 
         // is used as a Shader Type to define a vertex to be transformed.
-        [ShaderType]
+        [System.Compilers.Shaders.ShaderType]
         public struct MyPositionNormalColorData
         {
             [Position] // Attribute to set a Position semantic to this field.
@@ -168,57 +182,67 @@ namespace Tutorials.Modeling
             }
         }
 
+        /// <summary>
+        /// Stopwatch for the animation effect
+        /// </summary>
+        Stopwatch stopwatch = new Stopwatch();
+
         private void renderedControl1_Rendered(object sender, System.Rendering.Forms.RenderEventArgs e)
         {
-            var render = e.Render as IControlRenderDevice;
+            var render = e.Render;
 
             render.BeginScene();
 
             render.Draw(() =>
             {
-							//render.Draw(basic,
-							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-							//    Transforming.Translate(-4, 0, 0),
-							//    Transforming.Rotate(0, Axis.Y),
-							//    Materials.WhiteSmoke.Glossy.Glossy.Shinness.Shinness);
+                /// Drawing five models rotating over the world center.
+                /// They are all translated 4 units from the center and they are rotating over its own axis.
 
-							//render.Draw(manifoldModel,
-							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-							//    Transforming.Translate(-4, 0, 0),
-							//    Transforming.Rotate(GMath.Pi / 2, Axis.Y),
-							//    Materials.LightBlue.Glossy.Glossy.Shinness.Shinness);
+                render.Draw(basic,
+                    Transforms.Rotate((float)-stopwatch.Elapsed.TotalSeconds, Axis.Y | Axis.X),
+                    Transforms.Translate(-4, 0, 0),
+                    Transforms.Rotate(0, Axis.Y),
+                    Materials.WhiteSmoke.Glossy.Glossy.Shinness.Shinness);
 
-							//render.Draw(primitive,
-							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-							//    Transforming.Translate(-4, 0, 0),
-							//    Transforming.Rotate(2 * GMath.Pi / 2, Axis.Y),
-							//    Materials.White.Glossy.Glossy.Shinness.Shinness);
+                render.Draw(manifoldModel,
+                    Transforms.Rotate((float)-stopwatch.Elapsed.TotalSeconds, Axis.Y | Axis.X),
+                    Transforms.Translate(-4, 0, 0),
+                    Transforms.Rotate(2 * GMath.Pi / 5, Axis.Y),
+                    Materials.LightBlue.Glossy.Glossy.Shinness.Shinness);
 
-							//render.Draw(group,
-							//    Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-							//    Transforming.Translate(-4, 0, 0),
-							//    Transforming.Rotate(2 * GMath.Pi / 2, Axis.Y),
-							//    Materials.White.Glossy.Glossy.Shinness.Shinness);
+                render.Draw(primitive,
+                    Transforms.Rotate((float)-stopwatch.Elapsed.TotalSeconds, Axis.Y | Axis.X),
+                    Transforms.Translate(-4, 0, 0),
+                    Transforms.Rotate(2 * GMath.Pi / 5 * 2, Axis.Y),
+                    Materials.White.Glossy.Glossy.Shinness.Shinness);
+                render.Draw(group,
+                    Transforms.Rotate((float)-stopwatch.Elapsed.TotalSeconds, Axis.Y | Axis.X),
+                    Transforms.Translate(-4, 0, 0),
+                    Transforms.Rotate(2 * GMath.Pi / 5 * 3, Axis.Y),
+                    Materials.Brown.Glossy.Glossy.Shinness.Shinness);
 
-							render.Draw(csg,
-								 Transforming.Rotate(-Environment.TickCount / 400f, Axis.Y | Axis.X),
-								 Transforming.Translate(-4, 0, 0),
-								 Transforming.Rotate(3 * GMath.Pi / 2, Axis.Y),
-								 Materials.Red.Glossy.Glossy.Shinness.Shinness);
+                render.Draw(csg,
+                   Transforms.Rotate((float)-stopwatch.Elapsed.TotalSeconds, Axis.Y | Axis.X),
+                   Transforms.Translate(-4, 0, 0),
+                   Transforms.Rotate(2 * GMath.Pi / 5 * 4, Axis.Y),
+                   Materials.Red.Glossy.Glossy.Shinness.Shinness);
             },
-                Culling.None,
-                filling ? Filling.Fill : Filling.Lines,
-                Transforming.Rotate(Environment.TickCount / 5000f, Axis.Y),
-                Lighting.PointLight(new Vector3(3, 5, 6), new Vector3(1, 1, 1)),
-                Viewing.LookAtLH(new Vector3(0, 0, 10), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-                Projecting.PerspectiveFovLH(GMath.PiOver4, render.GetAspectRatio(), 1, 1000),
+                /// RasterOptions class allows to access to Culling and Filling effects. Those are settings of cull modes and fill modes respectively.
+                RasterOptions.CullBack,
+                filling ? 
+                    RasterOptions.ViewSolid : 
+                    RasterOptions.ViewWireframe,
+                Transforms.Rotate((float)stopwatch.Elapsed.TotalSeconds / 5, Axis.Y),
+                Lights.Point(new Vector3(3, 5, 6), new Vector3(1, 1, 1)),
+                Cameras.LookAt(new Vector3(0, 0, 10), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+                Cameras.Perspective(render.GetAspectRatio()),
                 Buffers.Clear(0.2f, 0.2f, 0.4f, 1),
                 Buffers.ClearDepth(),
-                Shading.Phong
+                Shaders.Phong
                 );
 
             render.EndScene();
-            
+
             renderedControl1.Invalidate();
         }
     }

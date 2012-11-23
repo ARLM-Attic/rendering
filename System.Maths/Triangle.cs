@@ -123,14 +123,14 @@ namespace System.Maths
             return true;
         }
 
-        public double Area
+        public float Area
         {
             get
             {
-                double A = GMath.length(V2 - V1);
-                double B = GMath.length(V3 - V1);
-                double C = GMath.length(V3 - V2);
-                return A * System.Math.Sqrt(C * C - System.Math.Pow((A * A - B * B + C * C) / (2 * A), 2)) / 2;
+                float A = GMath.length(V2 - V1);
+                float B = GMath.length(V3 - V1);
+                float C = GMath.length(V3 - V2);
+                return A * GMath.sqrt(C * C - GMath.pow((A * A - B * B + C * C) / (2 * A), 2)) / 2;
             }
         }
 

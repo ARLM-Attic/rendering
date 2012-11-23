@@ -182,16 +182,20 @@ namespace System.Rendering
             return new SingleModel<GP>(primitive);
         }
 
-        public static IModel Union(IModel model1, IModel model2)
+
+
+        public static IModel Union(params IModel[] models)
         {
-            return CSGOperations.Union(model1, model2);
+            if (models.Length == 0)
+                return Mesh<PositionNormalData>.Empty;
+            
+            IModel result = models[0];
+
+            for (int i = 1; i < models.Length; i++)
+                result = Models._Union(result, models[i]);
+
+            return result;
         }
-
-				public static IModel Union(params IModel[] models)
-				{
-					return models.Aggregate((m1, m2) => Union(m1, m2));	
-				}
-
         public static IModel Intersection(IModel model1, IModel model2)
         {
             return CSGOperations.Intersect(model1, model2);
@@ -200,6 +204,11 @@ namespace System.Rendering
         public static IModel Subtract(IModel model1, IModel model2)
         {
             return CSGOperations.Subtract(model1, model2);
+        }
+
+        public static ModelGroup Group(params IModel[] models)
+        {
+            return new ModelGroup(models);
         }
     }
 
@@ -287,6 +296,9 @@ namespace System.Rendering
 
         public static Mesh ToMesh(this IModel model)
         {
+            if (model is Mesh)
+                return (Mesh)model;
+
             ModelToMeshTransformer transformer = new ModelToMeshTransformer();
 
             model.Tesselate(transformer);

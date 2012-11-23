@@ -17,10 +17,10 @@ using System.Maths;
 
 namespace System.Rendering.Modeling
 {
-  public class Teapot : Mesh
-  {
-    #region Data
-    private static Vector3[] data = new Vector3[]{
+    public class Teapot : Mesh
+    {
+        #region Data
+        private static Vector3[] data = new Vector3[]{
             new Vector3 (
  0.678873f,0.330678f,0.000000f), new Vector3 (
  0.669556f,0.358022f,0.000000f), new Vector3 (
@@ -1202,11 +1202,11 @@ namespace System.Rendering.Modeling
  0.606002f,0.330678f,-0.174537f)
         };
 
-    #endregion
+        #endregion
 
-    #region Indexes
+        #region Indexes
 
-    static private ushort[] indexes = new ushort[]{
+        static private ushort[] indexes = new ushort[]{
             0,7,8,
  8,1,0,
  1,8,9,
@@ -3465,11 +3465,11 @@ namespace System.Rendering.Modeling
  1039,1177,1176
         };
 
-    #endregion
+        #endregion
 
-    #region Normals
+        #region Normals
 
-    private static Vector3[] normals = new Vector3[]{
+        private static Vector3[] normals = new Vector3[]{
             new Vector3 (  -0.945751f,-0.322256f,-0.041309f), new Vector3 (
   -0.992771f,-0.120019f,-0.001089f), new Vector3 (
   -0.842751f,0.538169f,0.012052f), new Vector3 (
@@ -4649,27 +4649,39 @@ namespace System.Rendering.Modeling
   0.474665f,0.872307f,-0.117360f), new Vector3 (
   0.654648f,0.727038f,-0.207008f)};
 
-    #endregion
+        #endregion
 
-    private static PositionNormalCoordinatesData[] GetData()
-    {
-      PositionNormalCoordinatesData[] data = new PositionNormalCoordinatesData[Teapot.data.Length];
-      for (int i = 0; i < data.Length; i++)
-      {
-        data[i] = new PositionNormalCoordinatesData()
+        private static PositionNormalCoordinatesData[] GetData()
         {
-          Position = Teapot.data[i],
-          Normal = normals[i],
-          Coordinates = new Vector2(Teapot.data[i].X * 0.5f - 0.5f, 0.5f - Teapot.data[i].Y * 0.5f)
-        };
-      }
+            PositionNormalCoordinatesData[] data = new PositionNormalCoordinatesData[Teapot.data.Length];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = new PositionNormalCoordinatesData()
+                {
+                    Position = Teapot.data[i],
+                    Normal = normals[i],
+                    Coordinates = new Vector2(Teapot.data[i].X * 0.5f - 0.5f, 0.5f - Teapot.data[i].Y * 0.5f)
+                };
+            }
 
-      return data;
-    }
+            return data;
+        }
 
-    public Teapot()
-      : base(GetData(), indexes)
-    {
+        static ushort[] Fix(ushort[] indexes)
+        {
+            indexes = indexes.Clone() as ushort[];
+            for (int i = 0; i < indexes.Length / 3; i++)
+            {
+                ushort temp = indexes[i * 3 + 1];
+                indexes[i * 3 + 1] = indexes[i * 3 + 2];
+                indexes[i * 3 + 2] = temp;
+            }
+            return indexes;
+        }
+
+        public Teapot()
+            : base(GetData(), Fix(indexes))
+        {
+        }
     }
-  }
 }

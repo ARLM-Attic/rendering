@@ -16,11 +16,16 @@ using System.Text;
 using System.Rendering.RenderStates;
 using System.Maths;
 
-namespace System.Rendering.Effects
+namespace System.Rendering
 {
     public sealed class Buffers
     {
         private Buffers() { }
+
+        public static Effect<FrameBufferState> FrameMask(ColorMask mask)
+        {
+            return new Effect<FrameBufferState>(new FrameBufferState(new Vector4(), mask).DoNotClear ());
+        }
 
         public static Effect<FrameBufferState> Clear(float red, float green, float blue, float alpha)
         {

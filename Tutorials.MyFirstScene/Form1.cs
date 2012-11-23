@@ -11,10 +11,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Rendering.Direct3D9;
 using System.Rendering;
-using System.Rendering.Forms;
-using System.Rendering.Effects;
 using System.Maths;
 
 namespace Tutorials.MyFirstScene
@@ -27,7 +24,7 @@ namespace Tutorials.MyFirstScene
 
             /// Sets the render object to use by this RenderedControl.
             /// RenderDevice objects represents the abstraction of a Render Device, like Device interface in DX or Rendering Contexts in OpenGL.
-            renderedControl1.Render = new Direct3DRender();
+            renderedControl1.Render = new System.Rendering.Direct3D9.Direct3DRender();
         }
 
         IModel model;
@@ -59,7 +56,7 @@ namespace Tutorials.MyFirstScene
             /// In its more basic form, a render device has not limits (imagine a web page, or a console)
             /// To specify renders that result in a image use (implement) IImageRenderDevice.
             /// IControlRenderDevice is an IImageRenderDevice.
-            var render = e.Render as IControlRenderDevice;
+            var render = e.Render;
 
             /// All draws need to be between a begin scene and an end scene calls. That is to allow the most widely used pattern to draw a frame.
             render.BeginScene();
@@ -77,17 +74,18 @@ namespace Tutorials.MyFirstScene
                     /// More close to the model, more a local effect (last being applied before draw).
                     /// Next transformation effects result in a translation of a rotation instead of a rotation of a translation.
                     /// Transforming effects allows world transformations to be set in render states.
-                    Transforming.Rotate(Environment.TickCount / 100f, Axis.Y),
-                    Transforming.Translate (-1,0,0), /// Swaps these transformations to see the importance of the order.
+                    /// You can access to several transforms using Transforms class or casting a 4x4 matrix to Transforming.
+                    Transforms.Rotate(Environment.TickCount / 100f, Axis.Y),
+                    Transforms.Translate (-1,0,0), /// Swaps these transformations to see the importance of the order.
                     /// Materials is a class to easily create material effects. A Material effect sets some material info in render states.
                     Materials.WhiteSmoke.Glossy.Glossy.Shinness.Shinness);
             },
                 /// Creates an effect that sets a light in render states.
-                Lighting.PointLight (new Vector3 (3,5,6), new Vector3 (1,1,1)),
+                Lights.Point (new Vector3 (3,5,6), new Vector3 (1,1,1)),
                 /// Creates an effect that sets the viewer matrix in render states.
-                Viewing.LookAtLH(new Vector3 (2,3,4), new Vector3 (0,0,0), new Vector3 (0,1,0)),
+                Cameras.LookAt(new Vector3 (2,3,4), new Vector3 (0,0,0), new Vector3 (0,1,0)),
                 /// Creates an effect that sets the projection matrix in render states.
-                Projecting.PerspectiveFovLH(GMath.PiOver4, render.GetAspectRatio(), 1, 1000),
+                Cameras.Perspective(render.GetAspectRatio()),
                 /// Creates an effect that erases the frame buffer with certain color.
                 Buffers.Clear(0.2f, 0.2f, 0.4f, 1),
                 /// Creates an effect that erases the depth buffer with 1.
@@ -96,7 +94,7 @@ namespace Tutorials.MyFirstScene
                 /// By default, fixed pipelines-based render devices will skip all these effects, but in 
                 /// programmable pipelines-based render devices, default behaviour doesnt use render states, so this instruction
                 /// is required to used a traditional pipeline using shaders.
-                Shading.Phong
+                Shaders.Phong
                 );
 
             /// This call should present the scene.

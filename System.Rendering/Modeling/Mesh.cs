@@ -53,7 +53,7 @@ namespace System.Rendering.Modeling
             this.manager = new DefaultMeshManager(vertexes, indices);
         }
 
-        protected internal Mesh(IMeshManager manager)
+        protected internal Mesh(IMeshManager manager) : base (manager.Vertexes.Render)
         {
             this.manager = manager;
         }
@@ -245,6 +245,8 @@ namespace System.Rendering.Modeling
             PositionNormalData[] positions = Vertexes.GetData<PositionNormalData>();
             int[] indexes = Indices.GetData<int>();
 
+            Vector3[] normals = new Vector3[positions.Length];
+
             bool[] discard = new bool[positions.Length];
             int[] replaced = new int[positions.Length];
 
@@ -266,15 +268,19 @@ namespace System.Rendering.Modeling
             {
                 Triangle t = new Triangle(positions[indexes[i * 3 + 0]].Position, positions[indexes[i * 3 + 2]].Position, positions[indexes[i * 3 + 1]].Position);
                 var v = t.Normal;
-                positions[replaced[indexes[i * 3 + 0]]].Normal += v;
-                positions[replaced[indexes[i * 3 + 1]]].Normal += v;
-                positions[replaced[indexes[i * 3 + 2]]].Normal += v;
+                normals[replaced[indexes[i * 3 + 0]]] += v;
+                normals[replaced[indexes[i * 3 + 1]]] += v;
+                normals[replaced[indexes[i * 3 + 2]]] += v;
             }
 
             for (int i = 0; i < positions.Length; i++)
-                positions[i].Normal = GMath.normalize(positions[replaced[i]].Normal);
+                positions[i].Normal = GMath.normalize(normals[replaced[i]]);
 
             Vertexes.Update(positions);
+        }
+
+        public void ComputeTangents()
+        {
         }
 
         #endregion
@@ -524,6 +530,8 @@ namespace System.Rendering.Modeling
         IEnumerable<IntersectInfo> Intersect(Ray ray);
 
         void ComputeNormals();
+
+        void ComputeTangents();
 
         void WeldVertexes(float epsilon);
 

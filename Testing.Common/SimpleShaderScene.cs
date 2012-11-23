@@ -84,13 +84,14 @@ namespace Testing.Common
 						//render.Draw(Models.Cube);
 					}
 					,
-			Transforming.Rotate(Environment.TickCount / 500f, Axis.Y),
-			Lighting.PointLight(new Vector3(4, 4, -6), new Vector3(1, 1, 1)),
-			Viewing.LookAtLH(new Vector3(3, 2f, -5), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-			Materials.White.Shinness.Shinness.Glossy.Glossy,
-			Projecting.PerspectiveFovLH((float)Math.PI / 4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
+			Transforms.Rotate(Environment.TickCount / 500f, Axis.Y),
+			Lights.Point(new Vector3(4, 4, -6), new Vector3(1, 1, 1)),
+            Materials.White.Shinness.Shinness.Glossy.Glossy,
+            
+            Cameras.LookAt(new Vector3(3, 2f, -5), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+			Cameras.Perspective(render.GetAspectRatio()),
 			
-            Shading.Phong,
+            Shaders.Phong,
             
             Buffers.ClearDepth(),
 			Buffers.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));

@@ -8,7 +8,7 @@ namespace System.Rendering
     /// <summary>
     /// Class used to extend IRender interface basic functionallities.
     /// </summary>
-    public static class RenderExtensions
+    public static class RenderDeviceExtensors
     {
         /// <summary>
         /// Draws a logic provided by an Action object affected by a secuence of effects.

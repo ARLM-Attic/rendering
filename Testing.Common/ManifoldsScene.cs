@@ -33,14 +33,14 @@ namespace Testing.Common
                     return new PositionData { Position = new Vector3(x, z / 10, y) };
                 }));
             },
-            Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y),
+            Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y),
             Materials.White.Plastic.Plastic,
-            Lighting.PointLight(new Vector3(0, 5, -6), new Vector3(1, 1, 1)),
-            Lighting.AmbientLight(new Vector3(0.2f, 0.2f, 0.2f)),
+            Lights.Point(new Vector3(0, 5, -6), new Vector3(1, 1, 1)),
+            Lights.Ambient(new Vector3(0.2f, 0.2f, 0.2f)),
                 //AlphaBlending.BlendAlpha,
-            Shading.Phong,
-            Viewing.LookAtRH(new Vector3(1f, 1f, -2), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-            Projecting.PerspectiveFovRH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
+            Shaders.Phong,
+            Cameras.LookAt(new Vector3(1f, 1f, 2), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+            Cameras.Perspective(render.GetAspectRatio()),
             Buffers.ClearDepth(),
             Buffers.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));
             render.EndScene();

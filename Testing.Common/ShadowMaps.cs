@@ -48,31 +48,31 @@ namespace Testing.Common
             {
                 render.Draw(teapot
                         , Materials.White.Shinness.Shinness.Glossy
-                        , shadowMap ? Effect.None : Shading.DiffuseMap(image)
+                        , shadowMap ? Effect.None : Shaders.DiffuseMap(image)
                         );
-                render.Draw(teapot, Transforming.Translate(-2, 0, 0)
+                render.Draw(teapot, Transforms.Translate(-2, 0, 0)
                         , Materials.White.Shinness.Shinness.Glossy
                     //, shadowMap ? Effect.None : Shading.DiffuseMap(image)
                         );
-                render.Draw(teapot, Transforming.Translate(2, 0, 0)
+                render.Draw(teapot, Transforms.Translate(2, 0, 0)
                         , Materials.White.Shinness.Shinness.Glossy
                     //, shadowMap ? Effect.None : Shading.DiffuseMap(image)
                         );
 
-                render.Draw(teapot, Transforming.Translate(0, 0, -2)
+                render.Draw(teapot, Transforms.Translate(0, 0, -2)
                         , Materials.White.Shinness.Shinness.Glossy
                     //, shadowMap ? Effect.None : Shading.DiffuseMap(image)
                         );
-                render.Draw(teapot, Transforming.Translate(0, 0, 2)
+                render.Draw(teapot, Transforms.Translate(0, 0, 2)
                         , Materials.White.Shinness.Shinness.Glossy
                     //, shadowMap ? Effect.None : Shading.DiffuseMap(image)
                         );
                 render.Draw(plane,
-                    Transforming.Translate (0, -1f,0)
+                    Transforms.Translate (0, -1f,0)
                         //, shadowMap ? Effect.None : Materials.White
                         );
             },
-                shadowMap ? Effect.None : Lighting.PointLight(LightPosition, new Vector3(1, 1, 1)),
+                shadowMap ? Effect.None : Lights.Point(LightPosition, new Vector3(1, 1, 1)),
                 (Viewing)view,
                 (Projecting)projection,
                 Buffers.Clear(shadowMap ? new Vector4(1,1,1,1) : new Vector4(0.2f, 0.2f, 0.2f, 0.2f)),
@@ -104,7 +104,7 @@ namespace Testing.Common
                     var p = GMath.mul(new Vector4(In.Position, 1), shadowMapProjection);
                     return new ColorData { Color = new Vector4(p.Z / p.W, 0, 0, 1) };
                 }) { AppendMode = AppendMode.Append },
-                Shading.VertexTransform, Shading.None);
+                Shaders.DefaultVertexTransform, Shaders.None);
 
             textureRender.EndScene();
 
@@ -131,7 +131,7 @@ namespace Testing.Common
                         Specular = new Vector3  (1,1,1) * In.Specular
                     };
                 }) { AppendMode = AppendMode.Prepend },
-                Shading.Phong
+                Shaders.Phong
                 );
 
             render.EndScene();

@@ -10,9 +10,9 @@ namespace System.Rendering.Modeling
     {
         IModel[] children;
 
-        public ModelGroup(params IModel[] model)
+        public ModelGroup(params IModel[] models)
         {
-            this.children = model.Clone() as IModel[];
+            this.children = models.Clone() as IModel[];
         }
 
         protected override Location OnClone(AllocateableBase toFill, IRenderDevice render)

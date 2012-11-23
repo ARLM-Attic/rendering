@@ -73,7 +73,7 @@ namespace System.Rendering.Effects
 
         public static Material From(Vector3 ambient_and_diffuse)
         {
-            Material mat = new Material() { BlendMode = StateBlendMode.Multiply };
+            Material mat = new Material() { BlendMode = StateBlendMode.Multiply, Opacity = 1 };
             mat.Ambient = mat.Diffuse = ambient_and_diffuse;
             mat.Specular = new Vector3(0, 0, 0);
             mat.SpecularSharpness = 1;
@@ -102,15 +102,13 @@ namespace System.Rendering.Effects
                 opacity));
         }
 
-        
-
         public Material Glossy
         {
             get
             {
                 return Material.From(
                     this.Ambient, this.Diffuse, this.Specular + new Vector3(0.3f,0.3f,0.3f),
-                    this.SpecularSharpness+10);
+                    this.SpecularSharpness+10, this.Opacity, this.Emission);
             }
         }
 
@@ -119,7 +117,7 @@ namespace System.Rendering.Effects
             get
             {
                 return Material.From(this.Ambient, this.Diffuse, this.Specular,
-                    this.SpecularSharpness + 20);
+                    this.SpecularSharpness + 20, this.Opacity, this.Emission);
             }
         }
 

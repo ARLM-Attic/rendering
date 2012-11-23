@@ -9,8 +9,11 @@ using System.Rendering.Effects.Shaders;
 
 namespace System.Rendering
 {
-    public static class Shading
+    public static class Shaders
     {
+        /// <summary>
+        /// Prepends a per-pixel texture map of the diffuse color (Color0).
+        /// </summary>
         public static Effect DiffuseMap(TextureBuffer texture)
         {
             if (texture is CubeTextureBuffer)
@@ -40,14 +43,25 @@ namespace System.Rendering
 
             throw new ArgumentException();
         }
+        /// <summary>
+        /// Prepends a per-pixel function map of the diffuse color (Color0).
+        /// </summary>
+        /// <param name="map">A function representing the color for current surface coordinates in tangent space.</param>
         public static Effect DiffuseMap(Func<Vector2, Vector4> map)
         {
             return new PixelShaderEffect<CoordinatesData, ColorData>(In => new ColorData { Color = map(In.Coordinates) }) { AppendMode = AppendMode.Prepend };
         }
+        /// <summary>
+        /// Prepends a per-pixel function map of the diffuse color (Color0).
+        /// </summary>
+        /// <param name="map">A function representing the color for the current 3D surface coordinates in tangent space.</param>
         public static Effect DiffuseMap3D(Func<Vector3, Vector4> map)
         {
             return new PixelShaderEffect<Coordinates3DData, ColorData>(In => new ColorData { Color = map(In.Coordinates) }) { AppendMode = AppendMode.Prepend };
         }
+        /// <summary>
+        /// Prepends a per-pixel texture map of the specular color (Color1).
+        /// </summary>
         public static Effect SpecularMap(TextureBuffer texture)
         {
             if (texture is CubeTextureBuffer)
@@ -77,25 +91,42 @@ namespace System.Rendering
 
             throw new ArgumentException();
         }
+        /// <summary>
+        /// Prepends a per-pixel function map of the specular color (Color1).
+        /// </summary>
+        /// <param name="map">A function representing the color for the current 3D surface coordinates in tangent space.</param>
         public static Effect SpecularMap(Func<Vector2, Vector4> map)
         {
             return new PixelShaderEffect<CoordinatesData, SecondaryColorData>(In => new SecondaryColorData { Color = map(In.Coordinates) }) { AppendMode = AppendMode.Prepend };
         }
+        /// <summary>
+        /// Prepends a per-pixel function map of the specular color (Color1).
+        /// </summary>
+        /// <param name="map">A function representing the color for the current 3D surface coordinates in tangent space.</param>
         public static Effect SpecularMap3D(Func<Vector3, Vector4> map)
         {
             return new PixelShaderEffect<Coordinates3DData, SecondaryColorData>(In => new SecondaryColorData { Color = map(In.Coordinates) }) { AppendMode = AppendMode.Prepend };
         }
 
+        /// <summary>
+        /// Appends a per-vertex setting of 3D coordinates using current vertex position.
+        /// </summary>
         public static Effect UseOrthographicCoordinates
         {
             get { return new VertexShaderEffect<PositionData, Coordinates3DData>(In => new Coordinates3DData { Coordinates = In.Position }) { AppendMode = AppendMode.Append }; }
         }
 
+        /// <summary>
+        /// Appends a per-vertex setting of 3D coordinates using current vertex normal.
+        /// </summary>
         public static Effect UseNormalCoordinates
         {
             get { return new VertexShaderEffect<NormalData, Coordinates3DData>(In => new Coordinates3DData { Coordinates = In.Normal }) { AppendMode = AppendMode.Append }; }
         }
 
+        /// <summary>
+        /// Appends a per-vertex setting of 3D coordinates using current vertex normal, position to get the reflection vector.
+        /// </summary>
         public static Effect UseReflectionCoordinates
         {
             get
@@ -110,6 +141,9 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Appends a per-vertex setting of 2D coordinates using current vertex normal normalized to 2D.
+        /// </summary>
         public static Effect Use2DNormalCoordinates
         {
             get
@@ -118,6 +152,9 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Appends a per-vertex setting of 2D coordinates using current vertex normal and position to get the reflection vector normalized to 2D.
+        /// </summary>
         public static Effect Use2DReflectionCoordinates
         {
             get
@@ -134,35 +171,51 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Replace all pipeline shaders to default. Allows to restart pipeline programming.
+        /// </summary>
         public static Effect None
         {
             get { return Set<NoPipeline>(); }
         }
 
-        public static Effect VertexTransform { get { return Append<VertexTransformPipeline>(); } }
+        /// <summary>
+        /// Appends a default vertex transformation using World, View and Projection matrices render states. Also, modify position and normal to view space.
+        /// </summary>
+        public static Effect DefaultVertexTransform { get { return Append<VertexTransformPipeline>(); } }
 
         class VertexTransformPipeline : Pipeline, IVertexProcessor
         {
             VertexTransformPipeline(IBasicContext context) : base(context) { }
 
-            ProjectedPositionNormalData Transform(PositionNormalData In)
+            ProjectedSurfaceData Transform(SurfaceData In)
             {
                 var worldView = GMath.mul(Context.World, Context.View);
 
-                var P = GMath.mul (new Vector4(In.Position,1) , worldView);
-                var N = GMath.mul (new Vector4(In.Normal, 0), worldView);
+                var P = GMath.mul(new Vector4(In.Position, 1), worldView);
 
-                return new ProjectedPositionNormalData
+                Matrix3x3 worldViewRot = (Matrix3x3)worldView;
+
+                var N = GMath.mul(In.Normal, worldViewRot);
+                var T = GMath.mul(In.Tangent, worldViewRot);
+                var B = GMath.mul(In.Binormal, worldViewRot);
+
+                return new ProjectedSurfaceData
                 {
-                    Projected = GMath.mul (P, Context.Projection),
+                    Projected = GMath.mul(P, Context.Projection),
                     Position = (Vector3)P,
-                    Normal = GMath.normalize ((Vector3)N)
+                    Normal = N,
+                    Binormal = B,
+                    Tangent = T,
+                    Coordinates = In.Coordinates,
+                    Diffuse = In.Diffuse,
+                    Specular = In.Specular
                 };
             }
 
             Effects.Shaders.ShaderSource IVertexProcessor.Processor
             {
-                get { return CreateSourceFrom<PositionNormalData, ProjectedPositionNormalData>(Transform); }
+                get { return CreateSourceFrom<SurfaceData, ProjectedSurfaceData>(Transform); }
             }
         }
 
@@ -181,10 +234,11 @@ namespace System.Rendering
                 var lambert = GMath.max(0, GMath.dot(In.Normal, lightDir));
                 diffuse = lambert * light.Diffuse;
                 var H = GMath.normalize(lightDir - In.Position);
-                var blinn = GMath.pow(GMath.max(0.01f, GMath.dot(H, In.Normal)), Context.Material.Shininess);
-                //if (GMath.dot(lightDir, In.Normal) < 0.0001f)
-                //    blinn = 0;
-                specular = blinn * light.Specular;
+                var cosH = GMath.dot(H, In.Normal);
+                if (cosH > 0)
+                    specular = GMath.pow(cosH, Context.Material.Shininess) * light.Specular;
+                else
+                    specular = new Vector3(0, 0, 0);
             }
 
             ColorsData Lit(SurfaceData In)
@@ -194,18 +248,17 @@ namespace System.Rendering
 
                 Vector3 diffuse, specular;
 
-                if (Context.NumberOfLights > 0)
-                {
-                    PerformLit(Context.Light0, In, out diffuse, out specular);
-                    totaldiffuse += diffuse;
-                    totalspecular += specular;
-                }
-                //if (Context.NumberOfLights > 1)
-                //{
-                //    PerformLit(Context.Light1, In, out diffuse, out specular);
-                //    totaldiffuse += diffuse;
-                //    totalspecular += specular;
-                //}
+                PerformLit(Context.Light0, In, out diffuse, out specular);
+                totaldiffuse += diffuse;
+                totalspecular += specular;
+
+                //PerformLit(Context.Light1, In, out diffuse, out specular);
+                //totaldiffuse += diffuse;
+                //totalspecular += specular;
+
+                //PerformLit(Context.Light2, In, out diffuse, out specular);
+                //totaldiffuse += diffuse;
+                //totalspecular += specular;
 
                 return new ColorsData { Diffuse = new Vector4((Context.AmbientColor * Context.Material.Ambient + totaldiffuse) * (Vector3)In.Diffuse, In.Diffuse.W), Specular = totalspecular * In.Specular };
             }
@@ -239,6 +292,9 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Prepends a per-vertex setting of diffuse and specular colors from material render state.
+        /// </summary>
         public static Effect UseMaterial
         {
             get
@@ -266,6 +322,9 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Performs a per-vertex lit using Lighting render states.
+        /// </summary>
         public static Effect VertexLit
         {
             get
@@ -274,6 +333,9 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Performs a per-pixel lit using Lighting render states.
+        /// </summary>
         public static Effect PixelLit
         {
             get
@@ -300,6 +362,9 @@ namespace System.Rendering
             }
         }
 
+        /// <summary>
+        /// Appends the sum of colors to get a final color.
+        /// </summary>
         public static Effect CombineLight
         {
             get { return Append<CombineLightPipeline>(); }
@@ -307,34 +372,165 @@ namespace System.Rendering
 
         public static Effect BumpMap(TextureBuffer bump, float ratio)
         {
-            return null;
+            Sampler2D normalMapSampler = new Sampler2D(bump) { Filters = new Filtering { Magnification = TextureFilterType.Linear, Minification = TextureFilterType.Linear, MipMapping = TextureFilterType.Linear } };
+            return new PixelShaderEffect<SurfaceData, NormalData>(In =>
+            {
+                var data = normalMapSampler.Sample(In.Coordinates);
+                var bN = new Vector3(data.X * 2 - 1, data.Y * 2 - 1, data.Z * 2 - 1);
+
+                var bin = In.Binormal;
+                var tan = In.Tangent;
+
+                Matrix3x3 tangentToView = new Matrix3x3(
+                    bin.X, bin.Y, bin.Z,
+                    tan.X, tan.Y, tan.Z,
+                    In.Normal.X, In.Normal.Y, In.Normal.Z);
+
+                bN = GMath.mul(bN, tangentToView);
+
+                return new NormalData { Normal = GMath.normalize(In.Normal * (1 - ratio) + bN * ratio) };
+            }) { AppendMode = AppendMode.Prepend };
         }
 
+        const int NumberOfSteps = 50;
+
+        public static Effect ParallaxMap(TextureBuffer height, float ratio)
+        {
+            Sampler2D heightMapSampler = new Sampler2D(height) { Filters = new Filtering { Magnification = TextureFilterType.Linear, Minification = TextureFilterType.Linear, MipMapping = TextureFilterType.Linear } };
+            return new PixelShaderEffect<SurfaceData, CoordinatesData>(In =>
+            {
+                var bin = GMath.normalize(In.Binormal);
+                var tan = GMath.normalize(In.Tangent);
+                var nor = GMath.normalize(In.Normal);
+
+                Matrix3x3 tangentToView = new Matrix3x3(
+                    bin.X, bin.Y, bin.Z,
+                    tan.X, tan.Y, tan.Z,
+                    nor.X, nor.Y, nor.Z);
+
+                Matrix3x3 viewToTangent = GMath.transpose(tangentToView);
+
+                Vector3 viewer = GMath.normalize(-1 * In.Position);
+
+                Vector3 viewerInTS = GMath.normalize(GMath.mul(viewer, viewToTangent)) / GMath.dot(In.Normal, viewer);
+
+                viewerInTS *= -1;
+
+                Vector3 T = new Vector3(In.Coordinates.X, In.Coordinates.Y, 1);
+
+                //viewerInTS.Z = viewerInTS.Z / ratio;
+                viewerInTS = viewerInTS * (1.0f / 50f);
+
+                viewerInTS.Z *= -1;
+
+                float h = 0;
+
+                bool found = false;
+
+                for (int i = 0; i < 50; i++)
+                {
+                    //if (invert)
+                    //    h = heightMapSampler.Sample((Vector2)T).X;
+                    //else
+                    h = (1 - (ratio) * heightMapSampler.Sample((Vector2)T).X);
+
+                    if (h >= T.Z)
+                    {
+                        if (!found)
+                            In.Coordinates = (Vector2)T;
+                        found = true;
+                    }
+                    else
+                        //if (!found)
+                        T += viewerInTS;
+                }
+
+                if (!found)
+                    In.Coordinates = (Vector2)T;
+
+                return new CoordinatesData { Coordinates = (Vector2)In.Coordinates };
+            }) { AppendMode = AppendMode.Prepend };
+        }
+
+        /// <summary>
+        /// Sets a gouraud efects given by VertexTransform, use of material, per-vertex lighting and combine.
+        /// </summary>
         public static Effect Gouraud
         {
-            get { return Effect.Concat(None, VertexTransform, UseMaterial, VertexLit, CombineLight); }
+            get { return Effect.Concat(DefaultVertexTransform, UseMaterial, VertexLit, CombineLight); }
         }
 
+        /// <summary>
+        /// Sets a phong efects given by VertexTransform, use of material, per-pixel lighting and combine.
+        /// </summary>
         public static Effect Phong
         {
-            get { return Effect.Concat(None, VertexTransform, UseMaterial, PixelLit, CombineLight); }
+            get { return Effect.Concat(DefaultVertexTransform, UseMaterial, PixelLit, CombineLight); }
         }
 
+        /// <summary>
+        /// Prepends a free-transform to each vertex of the model. Data will be mapped from a type to same type.
+        /// </summary>
+        /// <typeparam name="T">Type of the vertex to be transformed.</typeparam>
+        /// <param name="transform">Transformation function.</param>
+        /// <returns>A VertexShaderEffect object that performs the transformation.</returns>
+        public static Effect FreeTransform<T>(Func<T, T> transform) where T : struct
+        {
+            return new VertexShaderEffect<T, T>(transform) { AppendMode = AppendMode.Prepend };
+        }
+
+        /// <summary>
+        /// Prepends a free-transform to each pixel of the surface. Data will be mapped from a type to another type.
+        /// </summary>
+        /// <typeparam name="In">Input type of a pixel data.</typeparam>
+        /// <typeparam name="Out">Output type of a pixel data.</typeparam>
+        /// <param name="transform">Transformation function.</param>
+        /// <returns>A PixelShaderEffect object that performs the pixel transformation.</returns>
+        public static Effect PixelTransform<In, Out>(Func<In, Out> transform)
+            where In : struct
+            where Out : struct
+        {
+            return new PixelShaderEffect<In, Out>(transform) { AppendMode = AppendMode.Prepend };
+        }
+
+        /// <summary>
+        /// Prepends a free-transform to vertex pixel of the surface. Data will be mapped from a type to another type.
+        /// </summary>
+        /// <typeparam name="In">Input type of a pixel data.</typeparam>
+        /// <typeparam name="Out">Output type of a pixel data.</typeparam>
+        /// <param name="transform">Transformation function.</param>
+        /// <returns>A PixelShaderEffect object that performs the pixel transformation.</returns>
+        public static Effect VertexTransform<In, Out>(Func<In, Out> transform)
+            where In : struct
+            where Out : struct
+        {
+            return new VertexShaderEffect<In, Out>(transform) { AppendMode = AppendMode.Prepend };
+        }
+
+        /// <summary>
+        /// Sets a pipeline behaviour as an effect replacing existing behaviour on each stage.
+        /// </summary>
+        /// <typeparam name="P">Pipeline type used to replace the existing one.</typeparam>
         public static Effect Set<P>() where P : Pipeline
         {
-            return Use<P>(AppendMode.Replace);
+            return new PipelineEffect<P>(AppendMode.Replace);
         }
+
+        /// <summary>
+        /// Appends a pipeline behaviour as an effect on each stage.
+        /// </summary>
+        /// <typeparam name="P">Pipeline type used to replace the existing one.</typeparam>
         public static Effect Append<P>() where P : Pipeline
         {
-            return Use<P>(AppendMode.Append);
+            return new PipelineEffect<P>(AppendMode.Append);
         }
+        /// <summary>
+        /// Prepends a pipeline behaviour as an effect on each stage.
+        /// </summary>
+        /// <typeparam name="P">Pipeline type used to replace the existing one.</typeparam>
         public static Effect Prepend<P>() where P : Pipeline
         {
-            return Use<P>(AppendMode.Prepend);
-        }
-        public static Effect Use<P>(AppendMode mode) where P : Pipeline
-        {
-            return new PipelineEffect<P>(mode);
+            return new PipelineEffect<P>(AppendMode.Prepend);
         }
     }
 }

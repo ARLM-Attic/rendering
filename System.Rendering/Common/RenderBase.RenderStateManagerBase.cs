@@ -52,6 +52,12 @@ namespace System.Rendering
                 get { return render.Tessellator; }
             }
 
+            public bool Restoring
+            {
+                get;
+                private set;
+            }
+
             #region IRenderState Members
 
             public virtual RS GetState<RS>() where RS : struct
@@ -92,6 +98,7 @@ namespace System.Rendering
 
             public virtual void Restore<RS>() where RS : struct
             {
+                Restoring = true;
                 if (this is IRenderStateManagerOf<RS>)
                     ((IRenderStateManagerOf<RS>)this).Restore();
                 else
@@ -99,6 +106,7 @@ namespace System.Rendering
                     stacking.Pop<RS>();
                     SetState<RS>(stacking.GetCurrent<RS>());
                 }
+                Restoring = false;
             }
 
             #endregion
@@ -123,75 +131,5 @@ namespace System.Rendering
                 stacking.Dispose();
             }
         }
-
-        //public abstract class ShaderBasedRenderStatesManagerBase : RenderStatesManagerBase
-        //    , IRenderStateSetterOf<ShadeModeState>
-        //{
-        //    private Pipeline __Pipeline;
-
-        //    protected Pipeline Pipeline
-        //    {
-        //        get { return __Pipeline; }
-        //        set
-        //        {
-        //            if (__Pipeline != null)
-        //                __Pipeline.FieldUpdated -= new Action<string>(__Pipeline_FieldUpdated);
-        //            __Pipeline = value;
-        //            if (__Pipeline != null)
-        //                __Pipeline.FieldUpdated += new Action<string>(__Pipeline_FieldUpdated);
-        //            OnChangePipeline();
-        //        }
-        //    }
-
-        //    void  __Pipeline_FieldUpdated(string fieldName)
-        //    {
-        //        UpdateValueFor (fieldName);
-        //    }
-
-        //    protected ShaderSource VertexShader
-        //    {
-        //        get { return __Pipeline.VertexShaderSource; }
-        //    }
-
-        //    protected ShaderSource PixelShader
-        //    {
-        //        get { return __Pipeline.PixelShaderSource; }
-        //    }
-
-        //    protected virtual void OnChangePipeline()
-        //    {
-                
-        //    }
-
-        //    protected abstract void UpdateValueFor(string fieldName);
-
-        //    public ShaderBasedRenderStatesManagerBase(RenderBase render)
-        //        : base(render)
-        //    {
-        //    }
-
-        //    public void InitializePipeline()
-        //    {
-        //        Create<ShadeModeState>(ShadeModeState.Default);
-        //    }
-
-        //    public override void SetState<RS>(RS state)
-        //    {
-        //        base.SetState<RS>(state);
-
-        //        if (__Pipeline is IRenderStateSetterOf<RS>)
-        //        {
-        //            ((IRenderStateSetterOf<RS>)__Pipeline).State = state;
-        //        }                
-        //    }
-
-        //    ShadeModeState IRenderStateSetterOf<ShadeModeState>.State
-        //    {
-        //        set
-        //        {
-        //            this.Pipeline = value.Pipeline;
-        //        }
-        //    }
-        //}
     }
 }

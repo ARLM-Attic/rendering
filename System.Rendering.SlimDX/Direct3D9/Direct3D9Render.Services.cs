@@ -107,6 +107,11 @@ namespace System.Rendering.Direct3D9
             internalMesh.ComputeNormals();
         }
 
+        public void ComputeTangents()
+        {
+            internalMesh.ComputeTangent(0, 0, 0, false);
+        }
+
         public IMeshManager Tessellated(float segments)
         {
             var tessellated = SlimDX.Direct3D9.Mesh.TessellateNPatches(internalMesh, segments, false);

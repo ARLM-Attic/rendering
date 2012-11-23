@@ -99,37 +99,37 @@ namespace Testing.Common
 			render.Draw(() =>
 			{
 				render.Draw(model
-								, Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y)
-								, Transforming.Translate(new System.Maths.Vector3(-2, 0, 0))
+								, Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y)
+								, Transforms.Translate(new System.Maths.Vector3(-2, 0, 0))
 								, new PixelShaderEffect<ColorData, ColorData>(teapot1Filter.Process)
 								);
 				render.Draw(model
-								, Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y)
-								, Transforming.Translate(new System.Maths.Vector3(2, 0, 0))
+								, Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y)
+								, Transforms.Translate(new System.Maths.Vector3(2, 0, 0))
 								, new PixelShaderEffect<ColorData, ColorData>(teapot2Filter.Process)
 								);
 				render.Draw(model
-								, Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y)
-								, Transforming.Translate(new System.Maths.Vector3(0, -2, 0))
+								, Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y)
+								, Transforms.Translate(new System.Maths.Vector3(0, -2, 0))
 								, new PixelShaderEffect<ColorData, ColorData>(teapot3Filter.Process)
 								);
 				render.Draw(model
-								, Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y)
-								, Transforming.Translate(new System.Maths.Vector3(0, 2, 0))
+								, Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y)
+								, Transforms.Translate(new System.Maths.Vector3(0, 2, 0))
 								, new PixelShaderEffect<ColorData, ColorData>(teapot4Filter.Process)
 								);
 			},
 				//Filling.Lines,
 			Materials.White.Plastic.Plastic.Glossy.Glossy.Shinness.Shinness,
 			//Shading.DiffuseMap (v=>new Vector4(GMath.sin(Environment.TickCount/300f), GMath.cos(Environment.TickCount/300f), 0, 1)),
-			Shading.DiffuseMap(texture),
-			Shading.Phong,
-			Shading.VertexTransform,
-			Shading.UseMaterial,
-			Lighting.AmbientLight(new Vector3(0.2f, 0.2f, 0.2f)),
-			Lighting.PointLight(new System.Maths.Vector3(1, 4, 4), Vectors.White),
-			Viewing.LookAtLH(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 0, 6), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-			Projecting.PerspectiveFovLH(GMath.PiOver4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
+			Shaders.DiffuseMap(texture),
+			Shaders.Phong,
+			Shaders.DefaultVertexTransform,
+			Shaders.UseMaterial,
+			Lights.Ambient(new Vector3(0.2f, 0.2f, 0.2f)),
+			Lights.Point(new System.Maths.Vector3(1, 4, 4), Vectors.White),
+			Cameras.LookAt(new Vector3(GMath.sin((float)Environment.TickCount / 1000.0f), 0, 6), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+			Cameras.Perspective(render.GetAspectRatio()),
 			Buffers.Clear(new Vector4(0f, 0f, 0f, 1)),
 			Buffers.ClearDepth());
 

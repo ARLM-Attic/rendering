@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Rendering.RenderStates
+namespace System.Rendering
 {
     /// <summary>
     /// Mask for RGBA component colors.

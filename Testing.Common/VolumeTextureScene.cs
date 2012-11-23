@@ -47,8 +47,8 @@ namespace Testing.Common
 
                     render.Draw(() =>
                     {
-                        render.Draw(plane, Transforming.Translate(0, -1, 0), Shading.UseOrthographicCoordinates, Materials.Teal.Glossy.Glossy.Glossy.Shinness.Shinness);
-                        render.Draw(model, Transforming.Rotate(Environment.TickCount / 1000f, Axis.Y)
+                        render.Draw(plane, Transforms.Translate(0, -1, 0), Shaders.UseOrthographicCoordinates, Materials.Teal.Glossy.Glossy.Glossy.Shinness.Shinness);
+                        render.Draw(model, Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y)
                                  //, new VertexShaderEffect<PositionData, PositionCoordinates3DData>(In =>
                                  //{
                                  //    var v = In.Position + new Vector3(0, 0.05f, 0) * GMath.sin(10 * In.Position.X);
@@ -63,13 +63,13 @@ namespace Testing.Common
                 });
             },
             Materials.White.Shinness.Glossy,
-            Shading.DiffuseMap(volumeTexture),
-            Lighting.PointLight(new Vector3(0, 5, -6), new Vector3(1, 1, 1)),
-            Lighting.AmbientLight(new Vector3(0.2f, 0.2f, 0.2f)),
-            Viewing.LookAtRH(new Vector3(2, 1f, -8), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
-            Projecting.PerspectiveFovRH((float)Math.PI / 4, render.ImageHeight / (float)render.ImageWidth, 1, 1000),
+            Shaders.DiffuseMap(volumeTexture),
+            Lights.Point(new Vector3(0, 5, -6), new Vector3(1, 1, 1)),
+            Lights.Ambient(new Vector3(0.2f, 0.2f, 0.2f)),
+            Cameras.LookAt(new Vector3(2, 1f, -8), new Vector3(0, 0, 0), new Vector3(0, 1, 0)),
+            Cameras.Perspective(render.GetAspectRatio()),
             
-            Shading.Gouraud,
+            Shaders.Gouraud,
             
             Buffers.ClearDepth(),
             Buffers.Clear(new Vector4(0.6f, 0.5f, 0.5f, 1)));

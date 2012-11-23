@@ -76,7 +76,7 @@ namespace System.Rendering.RenderStates
             m.Specular = BlendVector(previus.Specular, this.Specular, StateBlendMode.Replace);
 
             m.SpecularSharpness = this.SpecularSharpness;
-            m.Opacity = BlendVector(new Vector3(previus.SpecularSharpness, 0, 0), new Vector3(this.SpecularSharpness, 0, 0), mode).X;
+            m.Opacity = BlendVector(new Vector3(previus.Opacity, 0, 0), new Vector3(this.Opacity, 0, 0), mode).X;
             return m;
         }
 

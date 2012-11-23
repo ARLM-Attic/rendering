@@ -125,7 +125,7 @@ namespace System.Rendering.OpenGL
                     bool alpha = (value.Mask & ColorMask.Alpha) != 0;
                     GL.ColorMask(red, green, blue, alpha);
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                         GL.Clear(ClearBufferMask.ColorBufferBit);
                 }
             }
@@ -164,7 +164,7 @@ namespace System.Rendering.OpenGL
                     else
                         GL.DepthMask(false);
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                         GL.Clear(ClearBufferMask.DepthBufferBit);
                 }
             }
@@ -263,7 +263,8 @@ namespace System.Rendering.OpenGL
                         Diffuse = value.Diffuse,
                         Emissive = value.Emission,
                         Shininess = (float)value.SpecularSharpness,
-                        Specular = value.Specular
+                        Specular = value.Specular,
+                        Opacity  = value.Opacity
                     };
                 }
             }
@@ -389,7 +390,7 @@ namespace System.Rendering.OpenGL
                         FromStencilOp(value.DepthFails),
                         FromStencilOp(value.Pass));
 
-                    if (value.ClearOnSet)
+                    if (value.ClearOnSet && !Restoring)
                     {
                         GL.ClearStencil(0);
                         GL.Clear(ClearBufferMask.StencilBufferBit);
