@@ -32,6 +32,8 @@ namespace Tutorials.BasicEffects
             InitializeComponent();
 
             renderedControl1.Render = new System.Rendering.OpenGL.OpenGLRender();
+            
+            stopwatch.Start();
         }
 
         /// <summary>

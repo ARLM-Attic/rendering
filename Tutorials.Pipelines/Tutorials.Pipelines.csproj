@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E0A59976-64A5-4359-A095-BAD3B7BB7EEF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tutorials.Pipelines</RootNamespace>
+    <AssemblyName>Tutorials.Pipelines</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
+    <Reference Include="SlimDX, Version=4.0.11.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\!Current\Libraries\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Compilers.Shaders.GLSL\System.Compilers.Shaders.GLSL.csproj">
+      <Project>{72086514-B34E-49A6-8F8B-D11BECDD27D8}</Project>
+      <Name>System.Compilers.Shaders.GLSL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compilers.Shaders.HLSL\System.Compilers.Shaders.HLSL.csproj">
+      <Project>{2EC081AB-41C9-436E-8255-7FC5A94FE079}</Project>
+      <Name>System.Compilers.Shaders.HLSL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compilers.Shaders\System.Compilers.Shaders.csproj">
+      <Project>{8FA8B4C1-E74B-4C8E-AA27-12270F3121BA}</Project>
+      <Name>System.Compilers.Shaders</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compilers\System.Compilers.csproj">
+      <Project>{25D36AD7-A754-4124-986C-0C41DB21CFEA}</Project>
+      <Name>System.Compilers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Maths\System.Maths.csproj">
+      <Project>{97D51C33-E916-476C-A411-7BCEF714E6B5}</Project>
+      <Name>System.Maths</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering.Forms\System.Rendering.Forms.csproj">
+      <Project>{DF04990C-20A3-4E53-9C73-B9E1DC04ACA5}</Project>
+      <Name>System.Rendering.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering.OpenTK\System.Rendering.OpenTK.csproj">
+      <Project>{4E0F3C17-878E-452F-A3C7-94C6A6AD1890}</Project>
+      <Name>System.Rendering.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering.SlimDX\System.Rendering.SlimDX.csproj">
+      <Project>{7CC53971-50D9-4F7B-9076-3F989128016C}</Project>
+      <Name>System.Rendering.SlimDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Rendering\System.Rendering.csproj">
+      <Project>{F4AD4314-35A4-495E-83AB-35E851C9075A}</Project>
+      <Name>System.Rendering</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

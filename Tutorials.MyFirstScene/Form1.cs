@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Rendering;
 using System.Maths;
+using System.Rendering.RenderStates;
 
 namespace Tutorials.MyFirstScene
 {
@@ -44,7 +45,7 @@ namespace Tutorials.MyFirstScene
             /// Allocate method (valid for all resources like textures, effect, models and graphics) creates a clone of the object
             /// using the memory of specific device whenever it can be done.
             /// You can query if the resource could be allocated by checking model.Location property.
-            model = Models.Teapot.Allocate(render);
+            model = Models.Teapot.Allocate(render).Tessellated (4);
         }
 
         /// <summary>
@@ -70,15 +71,16 @@ namespace Tutorials.MyFirstScene
                 /// All the draw in this action will be drawn with global effects.
                 /// Draw methods receive the object (model, graphic or primitive) to be drawn and a secuence of effects to be used.
                 render.Draw(model,
+                    Shaders.VertexTransform<PositionData, PositionData>(In => new PositionData { Position = In.Position + GMath.sin(In.Position.Z*10)*new Vector3(0,1,0)*0.3f }),
                     /// these are the local effects to the model
                     /// More close to the model, more a local effect (last being applied before draw).
                     /// Next transformation effects result in a translation of a rotation instead of a rotation of a translation.
                     /// Transforming effects allows world transformations to be set in render states.
                     /// You can access to several transforms using Transforms class or casting a 4x4 matrix to Transforming.
-                    Transforms.Rotate(Environment.TickCount / 100f, Axis.Y),
-                    Transforms.Translate (-1,0,0), /// Swaps these transformations to see the importance of the order.
+                    Transforms.Rotate(Environment.TickCount / 1000f, Axis.Y),
+                    Transforms.Translate(-1, 0, 0), /// Swaps these transformations to see the importance of the order.
                     /// Materials is a class to easily create material effects. A Material effect sets some material info in render states.
-                    Materials.WhiteSmoke.Glossy.Glossy.Shinness.Shinness);
+                    Materials.Red.Glossy.Glossy.Shinness.Shinness);
             },
                 /// Creates an effect that sets a light in render states.
                 Lights.Point (new Vector3 (3,5,6), new Vector3 (1,1,1)),
@@ -95,6 +97,7 @@ namespace Tutorials.MyFirstScene
                 /// programmable pipelines-based render devices, default behaviour doesnt use render states, so this instruction
                 /// is required to used a traditional pipeline using shaders.
                 Shaders.Phong
+
                 );
 
             /// This call should present the scene.

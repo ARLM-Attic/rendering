@@ -39,6 +39,8 @@ namespace Tutorials.Modeling
             this.renderedControl1.Render = new Direct3DRender();
 
             renderedControl1.KeyDown += new KeyEventHandler(renderedControl1_KeyDown);
+
+            stopwatch.Start();
         }
 
         void renderedControl1_KeyDown(object sender, KeyEventArgs e)
@@ -229,7 +231,7 @@ namespace Tutorials.Modeling
                    Materials.Red.Glossy.Glossy.Shinness.Shinness);
             },
                 /// RasterOptions class allows to access to Culling and Filling effects. Those are settings of cull modes and fill modes respectively.
-                RasterOptions.CullBack,
+                RasterOptions.NoCull,
                 filling ? 
                     RasterOptions.ViewSolid : 
                     RasterOptions.ViewWireframe,
