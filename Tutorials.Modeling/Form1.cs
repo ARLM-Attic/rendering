@@ -36,7 +36,7 @@ namespace Tutorials.Modeling
         {
             InitializeComponent();
 
-            this.renderedControl1.Render = new Direct3DRender();
+            this.renderedControl1.Render = new System.Rendering.Direct3D9.Direct3DRender();
 
             renderedControl1.KeyDown += new KeyEventHandler(renderedControl1_KeyDown);
 

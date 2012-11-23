@@ -27,7 +27,7 @@ namespace Tutorials.CustomEffect
         {
             InitializeComponent();
 
-            this.renderedControl1.Render = new System.Rendering.OpenGL.OpenGLRender();
+            this.renderedControl1.Render = new System.Rendering.Direct3D9.Direct3DRender();
         }
 
         IModel sampleModel;
